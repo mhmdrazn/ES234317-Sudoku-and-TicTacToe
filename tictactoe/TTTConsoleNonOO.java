@@ -1,3 +1,4 @@
+package tictactoe;
 import java.util.Scanner;
 /**
  * Tic-Tac-Toe: Two-player, console-based, non-graphics, non-OO version.
@@ -30,7 +31,7 @@ public class TTTConsoleNonOO {
    public static Scanner in = new Scanner(System.in); // the input Scanner
 
    /** The entry main method (the program starts here) */
-   public static void main(String[] args) {
+   public static void play() {
       // Initialize the board, currentState and currentPlayer
       do {
          initGame();
