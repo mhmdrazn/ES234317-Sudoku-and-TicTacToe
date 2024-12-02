@@ -13,6 +13,8 @@ public class Puzzle {
         super();
     }
 
+    // tes
+    
     // Generate a new puzzle given the number of cells to be guessed, which can be used
     //  to control the difficulty level.
     // This method shall set (or update) the arrays numbers and isGiven
