@@ -94,11 +94,11 @@ public class GameBoardPanel extends JPanel {
           * Update the cell status sourceCell.status,
           * and re-paint the cell via sourceCell.paint().
           */
-          if (numberIn == sourceCell.number) {
+         if (numberIn == sourceCell.number) {
             sourceCell.status = CellStatus.CORRECT_GUESS;
-          } else {
+         } else {
             sourceCell.status = CellStatus.WRONG_GUESS;
-          }
+         }
           sourceCell.paint();   // re-paint this cell based on its status
 
          /*
@@ -106,6 +106,11 @@ public class GameBoardPanel extends JPanel {
           * Check if the player has solved the puzzle after this move,
           *   by calling isSolved(). Put up a congratulation JOptionPane, if so.
           */
+         if (isSolved()) {
+            JOptionPane.showMessageDialog(null, "Congratulations! You have solved the puzzle!");
+         } else {
+            JOptionPane.showMessageDialog(null, "Keep trying!");
+         }
       }
    }
 }
