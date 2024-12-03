@@ -1,3 +1,4 @@
+package src.sudoku;
 /**
  * The Sudoku number puzzle to be solved
  */
@@ -13,8 +14,6 @@ public class Puzzle {
         super();
     }
 
-    // tes
-    
     // Generate a new puzzle given the number of cells to be guessed, which can be used
     //  to control the difficulty level.
     // This method shall set (or update) the arrays numbers and isGiven
@@ -46,10 +45,10 @@ public class Puzzle {
             {true, true, true, true, true, true, true, true, true},
             {true, true, true, true, true, true, true, true, true},
             {true, true, true, true, true, true, true, true, true},
+            {true, true, false, true, true, true, true, true, true},
             {true, true, true, true, true, true, true, true, true},
-            {true, true, true, true, true, true, true, true, true},
-            {true, true, true, true, true, true, true, true, true},
-            {true, true, true, true, true, true, true, true, true}};
+            {true, true, true, true, false, true, true, true, true},
+            {true, true, true, true, true, true, false, true, true}};
 
         // Copy from hardcodedIsGiven into array "isGiven"
         for (int row = 0; row < SudokuConstants.GRID_SIZE; ++row) {
