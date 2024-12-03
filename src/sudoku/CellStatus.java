@@ -1,3 +1,4 @@
+package src.sudoku;
 public enum CellStatus {
     GIVEN,         // clue, no need to guess
     TO_GUESS,      // need to guess - not attempted yet

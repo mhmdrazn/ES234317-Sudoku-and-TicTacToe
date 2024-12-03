@@ -1,3 +1,5 @@
+package src.sudoku;
+
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
@@ -107,9 +109,7 @@ public class GameBoardPanel extends JPanel {
           *   by calling isSolved(). Put up a congratulation JOptionPane, if so.
           */
          if (isSolved()) {
-            JOptionPane.showMessageDialog(null, "Congratulations! You have solved the puzzle!");
-         } else {
-            JOptionPane.showMessageDialog(null, "Keep trying!");
+            JOptionPane.showMessageDialog(null, "Congratulations! You have solved the game!");
          }
       }
    }
