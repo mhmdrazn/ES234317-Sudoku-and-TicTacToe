@@ -1,3 +1,13 @@
+/**
+ * ES234317-Algorithm and Data Structures
+ * Semester Ganjil, 2024/2025
+ * Group Capstone Project
+ * Group #4
+ * 1 - 5026231012 - Zihni Aryanto Putra Buana
+ * 2 - 5026231085 - Firmansyah Adi Prasetyo
+ * 3 - 5026231174 - Muhamamd Razan Parisya Putra
+ */
+
 package src.sudoku;
 
 import java.awt.*;
@@ -5,23 +15,27 @@ import java.awt.event.*;
 import javax.swing.*;
 
 public class GameBoardPanel extends JPanel {
-   private static final long serialVersionUID = 1L;  // to prevent serial warning
-
-   // Define named constants for UI sizes
-   public static final int CELL_SIZE = 60;   // Cell width/height in pixels
+   private static final long serialVersionUID = 1L;
+   public static final int CELL_SIZE = 60;
    public static final int BOARD_WIDTH  = CELL_SIZE * SudokuConstants.GRID_SIZE;
    public static final int BOARD_HEIGHT = CELL_SIZE * SudokuConstants.GRID_SIZE;
-                                             // Board width/height in pixels
 
-   // Define properties
-   /** The game board composes of 9x9 Cells (customized JTextFields) */
    private Cell[][] cells = new Cell[SudokuConstants.GRID_SIZE][SudokuConstants.GRID_SIZE];
-   /** It also contains a Puzzle with array numbers and isGiven */
    private Puzzle puzzle = new Puzzle();
+   private Timer timer;
+   private JLabel timerLabel;
 
    /** Constructor */
-   public GameBoardPanel() {
+   public GameBoardPanel(Timer timer) {
       super.setLayout(new GridLayout(SudokuConstants.GRID_SIZE, SudokuConstants.GRID_SIZE));  // JPanel
+
+      // Create a panel for the top area containing inputBar and timerLabel
+      JPanel topRightPanel = new JPanel(new BorderLayout());
+
+      // Create a label to display the timer
+      timerLabel = new JLabel("0 seconds");
+
+      topRightPanel.add(timerLabel, BorderLayout.WEST);
 
       // Allocate the 2D array of Cell, and added into JPanel.
       for (int row = 0; row < SudokuConstants.GRID_SIZE; ++row) {
