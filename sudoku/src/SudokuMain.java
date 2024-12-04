@@ -8,7 +8,7 @@
  * 3 - 5026231174 - Muhamamd Razan Parisya Putra
  */
 
-package src.sudoku;
+package sudoku.src;
 
 import java.awt.*;
 import javax.swing.*;
