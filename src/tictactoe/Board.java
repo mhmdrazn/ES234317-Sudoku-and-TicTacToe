@@ -30,7 +30,6 @@ public class Board {
     /** Composes of 2D array of ROWS-by-COLS Cell instances */
     Cell[][] cells;
 
-    /** Constructor to initialize the game board */
     public Board() {
         initGame();
     }
