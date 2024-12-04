@@ -8,8 +8,9 @@
  * 3 - 5026231174 - Muhamamd Razan Parisya Putra
  */
 
-package src.tictactoe;
-
-public enum State {
-   PLAYING, DRAW, CROSS_WON, NOUGHT_WON
-}
+package sudoku.src;
+public class Main {
+    public static void main(String[] args) {
+        new SudokuMain();
+    }
+}   
