@@ -28,11 +28,11 @@ public class SudokuMain extends JFrame {
    public SudokuMain() {
       Container cp = getContentPane();
       cp.setLayout(new BorderLayout());
-      cp.setBackground(new Color(30, 30, 60)); // Dark blue background
+      cp.setBackground(new Color(38, 49, 81)); // Dark blue background
 
       // Create the game board
       board = new GameBoardPanel(timer);
-      board.setBackground(new Color(30, 30, 60)); // Dark blue color for the board
+      board.setBackground(new Color(38, 49, 81)); // Dark blue color for the board
       cp.add(board, BorderLayout.CENTER);
 
       // Create and set up the timer
@@ -51,7 +51,7 @@ public class SudokuMain extends JFrame {
       timerView.setForeground(Color.WHITE);
 
       JPanel timerPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-      timerPanel.setBackground(new Color(30, 30, 60));
+      timerPanel.setBackground(new Color(38, 49, 81));
       timerPanel.add(timerView);
       cp.add(timerPanel, BorderLayout.NORTH);
 
@@ -63,7 +63,7 @@ public class SudokuMain extends JFrame {
 
       // Create and add New Game button
       btnNewGame = new JButton("New Game");
-      btnNewGame.setBackground(new Color(50, 50, 100));
+      btnNewGame.setBackground(new Color(38, 49, 81));
       btnNewGame.setForeground(Color.WHITE);
       btnNewGame.setFocusPainted(false);
       btnNewGame.addActionListener(new ActionListener() {

@@ -19,7 +19,7 @@ public class numberList extends JPanel {
         // Create and add number buttons to the panel
         for (int i = 0; i < 9; i++) {
             numberButtons[i] = new JButton(String.valueOf(i + 1));
-            numberButtons[i].setBackground(new Color(50, 50, 100)); // Darker color for buttons
+            numberButtons[i].setBackground(new Color(38, 49, 81)); // Darker color for buttons
             numberButtons[i].setForeground(Color.WHITE); // White text on buttons
             numberButtons[i].setFont(new Font("Arial", Font.PLAIN, 18)); // Set button font
 
