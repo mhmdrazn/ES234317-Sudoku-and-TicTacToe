@@ -12,90 +12,68 @@ package sudoku.src;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
 
 public class numberList extends JPanel {
     private static final long serialVersionUID = 1L;
-
-    private int selectedNumber = 0;
-    private JButton[] numberButtons = new JButton[9];
-    private int[] numberCounts = new int[9];
+    private JButton[] numberButtons;
+    private JLabel[] numberCountLabels;
+    private GameBoardPanel boardPanel;
 
     public numberList() {
-        setLayout(new FlowLayout());
+        setLayout(new GridLayout(1, 9, 5, 5));
         setBackground(new Color(33, 37, 49));
 
-        // Create and add number buttons
-        for (int i = 0; i < 9; i++) {
-            numberButtons[i] = new JButton(String.valueOf(i + 1));
-            numberButtons[i].setBackground(new Color(38, 49, 81));
-            numberButtons[i].setForeground(Color.WHITE);
-            numberButtons[i].setFont(new Font("Figtree", Font.PLAIN, 18));
+        numberButtons = new JButton[9];
+        numberCountLabels = new JLabel[9];
 
-            final int number = i + 1; 
-            numberButtons[i].addActionListener(e -> {
-                if (selectedNumber != number){
+        for (int i = 0; i < 9; i++) {
+            final int number = i + 1;
+            
+            // Create a panel for each number to hold button and count
+            JPanel numberPanel = new JPanel(new BorderLayout());
+            numberPanel.setBackground(new Color(33, 37, 49));
+
+            // Number button
+            numberButtons[i] = new JButton(String.valueOf(number));
+            numberButtons[i].setBackground(new Color(59, 65, 84));
+            numberButtons[i].setForeground(Color.WHITE);
+            numberButtons[i].addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
                     SudokuMain.input = number;
-                    System.out.println("Selected number: " + SudokuMain.input); // Debugging line
-                    selectedNumber = number;
                 }
             });
 
-            add(numberButtons[i]); // Add button to the panel
+            // Number count label
+            numberCountLabels[i] = new JLabel("0/9", SwingConstants.CENTER);
+            numberCountLabels[i].setForeground(Color.WHITE);
+            numberCountLabels[i].setFont(new Font("Figtree", Font.PLAIN, 10));
+            numberCountLabels[i].setBorder(BorderFactory.createEmptyBorder(5, 0, 0, 0));
+
+            numberPanel.add(numberButtons[i], BorderLayout.CENTER);
+            numberPanel.add(numberCountLabels[i], BorderLayout.SOUTH);
+
+            add(numberPanel);
         }
     }
 
-    // New method to check and update button states based on the game board
-    public void updateButtonStates(Cell[][] cells) {
-        // Reset counts
-        numberCounts = new int[9];
-
-        // Count correct guesses for each number
+    // Method to update number counts (should be cal    led after each cell update)
+    public void updateNumberCounts(Cell[][] cells) {
+        int[] counts = new int[9];
+    
         for (int row = 0; row < SudokuConstants.GRID_SIZE; row++) {
             for (int col = 0; col < SudokuConstants.GRID_SIZE; col++) {
-                if (cells[row][col].status == CellStatus.CORRECT_GUESS) {
+                if (cells[row][col].status == CellStatus.CORRECT_GUESS || cells[row][col].status == CellStatus.GIVEN) {
                     int number = cells[row][col].getNumber();
-                    numberCounts[number - 1]++;
+                    counts[number - 1]++;
                 }
             }
         }
-
-        // Disable buttons for numbers that have reached 9 correct guesses
+    
         for (int i = 0; i < 9; i++) {
-            numberButtons[i].setEnabled(numberCounts[i] < 9);
-            if (numberCounts[i] >= 9) {
-                System.out.println("Button " + (i + 1) + " is disabled");
-            }
+            numberCountLabels[i].setText(counts[i] + "/9");
+            numberButtons[i].setEnabled(counts[i] < 9);
         }
-    }
-
-    public void incrementNumberCount(int number){
-        if (number < 1 || number > 9) return;
-        numberCounts[number - 1]++;
-
-        if (numberCounts[number - 1] >= 9){
-            numberButtons[number - 1].setEnabled(false);
-            System.out.println("Button " + number + " is disabled");
-        }
-    }
-
-    public void decrementNumberButton(int number){
-        if (number < 1 || number > 9) return;
-        if (numberCounts[number - 1] > 0){
-            numberCounts[number -1]--;
-        }
-
-        if (numberCounts[number - 1]  < 9){
-            numberButtons[number - 1].setEnabled(true);
-        }
-    }
-
-    public int getSelectedNumber() {
-        return selectedNumber;
-    }
-
-    public void resetSelectedNumber() {
-        selectedNumber = 0;
     }
 }

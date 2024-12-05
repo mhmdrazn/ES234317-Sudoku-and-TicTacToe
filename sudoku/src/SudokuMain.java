@@ -22,6 +22,7 @@ public class SudokuMain extends JFrame {
    private int timeSecond = 0;
    private GameBoardPanel board;
    private JButton btnNewGame;
+   private JButton btnReset;
    private JDialog pauseDialog;
 
    public static int input = 0;
@@ -72,10 +73,27 @@ public class SudokuMain extends JFrame {
       
       // Create the number panel and New Game button container
       JPanel bottomPanel = new JPanel(new BorderLayout());
+      bottomPanel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+      bottomPanel.setBackground(new Color(33, 37, 49));
       
       // Number Panel button
       numberList numberPanel = new numberList();
+      numberPanel.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
       bottomPanel.add(numberPanel, BorderLayout.NORTH);
+
+      // Reset button
+      btnReset = new JButton("Reset Game");
+      btnReset.setBackground(new Color(33, 37, 49));
+      btnReset.setForeground(Color.WHITE);
+      btnReset.setFocusPainted(false);
+      btnReset.setFont(new Font("Figtree", Font.PLAIN, 12));
+      btnReset.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+               resetGame();
+            }
+      });
+      bottomPanel.add(btnReset, BorderLayout.WEST);
 
       // New Game button
       btnNewGame = new JButton("New Game");
@@ -89,7 +107,7 @@ public class SudokuMain extends JFrame {
                startNewGame();
             }
       });
-      bottomPanel.add(btnNewGame, BorderLayout.CENTER);
+      bottomPanel.add(btnNewGame, BorderLayout.EAST);
 
       // Setup container
       cp.add(board, BorderLayout.CENTER);
@@ -201,6 +219,11 @@ public class SudokuMain extends JFrame {
       timeSecond = 0;
       timer.start();
       updateTimerLabel();
+   }
+
+   // Reset the game
+   private void resetGame(){
+      board.resetGame();
    }
 
    // Update the timer label text in MM:SS format

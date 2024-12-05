@@ -35,11 +35,11 @@ public class GameBoardPanel extends JPanel {
       JPanel topRightPanel = new JPanel(new BorderLayout());
       JPanel bottomPanel = new JPanel(new BorderLayout());
 
-      // Create a label to display the timer
+      // Create timer label
       timerLabel = new JLabel("0 seconds");
       topRightPanel.add(timerLabel, BorderLayout.WEST);
 
-      //
+      // Create number input
       numberInput = new numberList();
       bottomPanel.add(numberInput, BorderLayout.NORTH);
 
@@ -73,6 +73,21 @@ public class GameBoardPanel extends JPanel {
             cells[row][col].newGame(puzzle.numbers[row][col], puzzle.isGiven[row][col]);
          }
       }
+
+      numberInput.updateNumberCounts(cells);
+   }
+
+   public void resetGame(){
+      for (int i = 0; i < 9; i++){
+         for (int j = 0; j < 9; j++){
+            if(cells[i][j].status == CellStatus.CORRECT_GUESS || cells[i][j].status == CellStatus.WRONG_GUESS){
+               cells[i][j].setText("");
+               cells[i][j].status = CellStatus.TO_GUESS;
+               cells[i][j].paint();
+               cells[i][j].setEnabled(true);
+            }
+         }
+      }
    }
 
    public boolean isSolved() {
@@ -102,6 +117,8 @@ public class GameBoardPanel extends JPanel {
                sourceCell.status = CellStatus.WRONG_GUESS;
             }
             sourceCell.paint();   // re-paint this cell based on its status
+
+            numberInput.updateNumberCounts(cells);
 
             if (isSolved()) {
                timer.stop();
