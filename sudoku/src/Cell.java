@@ -14,6 +14,7 @@ import java.awt.Color;
 import java.awt.Font;
 
 import javax.swing.BorderFactory;
+import javax.swing.JButton;
 import javax.swing.JTextField;
 import javax.swing.border.LineBorder;
 import javax.swing.border.MatteBorder;
@@ -22,11 +23,11 @@ import javax.swing.border.MatteBorder;
  * The Cell class model the cells of the Sudoku puzzle, by customizing (subclass)
  * the javax.swing.JTextField to include row/column, puzzle number and status.
  */
-public class Cell extends JTextField {
+public class Cell extends JButton {
     private static final long serialVersionUID = 1L;
 
     public static final Color BG_GIVEN = new Color(33, 37, 49); // RGB
-    public static final Color FG_GIVEN = new Color(179, 182, 192);
+    public static final Color FG_GIVEN = new Color(255, 255, 255);
     public static final Color FG_NOT_GIVEN = new Color(245, 245, 245);
     public static final Color BG_TO_GUESS = new Color(16, 16, 24);
     public static final Color BG_CORRECT_GUESS = new Color(59, 65, 84);
@@ -69,21 +70,28 @@ public class Cell extends JTextField {
         if (status == CellStatus.GIVEN) {
             // Inherited from JTextField: Set display properties
             super.setText(number + "");
-            super.setEditable(false);
+            super.setEnabled(false);
             super.setBackground(BG_GIVEN);
             super.setForeground(FG_GIVEN);
         } else if (status == CellStatus.TO_GUESS) {
             // Inherited from JTextField: Set display properties
             super.setText("");
-            super.setEditable(true);
+            super.setEnabled(true);
+            super.addActionListener( e -> {
+                if(status == CellStatus.TO_GUESS || status == CellStatus.WRONG_GUESS){
+                    setText("" + SudokuMain.input);
+                }
+            });
             super.setBackground(BG_TO_GUESS);
             super.setForeground(FG_NOT_GIVEN);
         } else if (status == CellStatus.CORRECT_GUESS) {  // from TO_GUESS
             super.setBackground(BG_CORRECT_GUESS);
             super.setForeground(FG_GIVEN);
+            super.setEnabled(true);
         } else if (status == CellStatus.WRONG_GUESS) {    // from TO_GUESS
             super.setBackground(BG_WRONG_GUESS);
             super.setForeground(FG_WRONG_GUESS);
+            super.setEnabled(true);
         }
     }
 
@@ -93,5 +101,9 @@ public class Cell extends JTextField {
         int bottom = (row % 3 == 2) ? 2 : 1;
         int right = (col % 3 == 2) ? 2 : 1;
         setBorder(BorderFactory.createMatteBorder(top, left, bottom, right, new Color(0, 2, 7)));
+    }
+
+    public int getNumber(){
+        return number;
     }
 }
