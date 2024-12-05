@@ -1,3 +1,13 @@
+/**
+ * ES234317-Algorithm and Data Structures
+ * Semester Ganjil, 2024/2025
+ * Group Capstone Project
+ * Group #4
+ * 1 - 5026231012 - Zihni Aryanto Putra Buana
+ * 2 - 5026231085 - Firmansyah Adi Prasetyo
+ * 3 - 5026231174 - Muhamamd Razan Parisya Putra
+ */
+
 package sudoku.src;
 
 import javax.swing.*;
@@ -8,28 +18,27 @@ import java.awt.event.ActionListener;
 public class numberList extends JPanel {
     private static final long serialVersionUID = 1L;
 
-    private int selectedNumber = 0; // Store the selected number
-    private JButton[] numberButtons = new JButton[9]; // Array to hold number buttons
+    private int selectedNumber = 0;
+    private JButton[] numberButtons = new JButton[9];
+    private int[] numberCounts = new int[9];
 
-    // Constructor
     public numberList() {
-        setLayout(new FlowLayout()); // Use FlowLayout to align buttons horizontally
-        setBackground(new Color(30, 30, 60)); // Dark blue background color
+        setLayout(new FlowLayout());
+        setBackground(new Color(33, 37, 49));
 
-        // Create and add number buttons to the panel
+        // Create and add number buttons
         for (int i = 0; i < 9; i++) {
             numberButtons[i] = new JButton(String.valueOf(i + 1));
-            numberButtons[i].setBackground(new Color(38, 49, 81)); // Darker color for buttons
-            numberButtons[i].setForeground(Color.WHITE); // White text on buttons
-            numberButtons[i].setFont(new Font("Arial", Font.PLAIN, 18)); // Set button font
+            numberButtons[i].setBackground(new Color(38, 49, 81));
+            numberButtons[i].setForeground(Color.WHITE);
+            numberButtons[i].setFont(new Font("Figtree", Font.PLAIN, 18));
 
-            // Add ActionListener to handle button clicks
-            final int number = i + 1;  // Store the number on the button
-            numberButtons[i].addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    selectedNumber = number; // Update the selected number when button is clicked
-                    System.out.println("Selected number: " + selectedNumber); // Debugging line
+            final int number = i + 1; 
+            numberButtons[i].addActionListener(e -> {
+                if (selectedNumber != number){
+                    SudokuMain.input = number;
+                    System.out.println("Selected number: " + SudokuMain.input); // Debugging line
+                    selectedNumber = number;
                 }
             });
 
@@ -37,12 +46,55 @@ public class numberList extends JPanel {
         }
     }
 
-    // Get the selected number
+    // New method to check and update button states based on the game board
+    public void updateButtonStates(Cell[][] cells) {
+        // Reset counts
+        numberCounts = new int[9];
+
+        // Count correct guesses for each number
+        for (int row = 0; row < SudokuConstants.GRID_SIZE; row++) {
+            for (int col = 0; col < SudokuConstants.GRID_SIZE; col++) {
+                if (cells[row][col].status == CellStatus.CORRECT_GUESS) {
+                    int number = cells[row][col].getNumber();
+                    numberCounts[number - 1]++;
+                }
+            }
+        }
+
+        // Disable buttons for numbers that have reached 9 correct guesses
+        for (int i = 0; i < 9; i++) {
+            numberButtons[i].setEnabled(numberCounts[i] < 9);
+            if (numberCounts[i] >= 9) {
+                System.out.println("Button " + (i + 1) + " is disabled");
+            }
+        }
+    }
+
+    public void incrementNumberCount(int number){
+        if (number < 1 || number > 9) return;
+        numberCounts[number - 1]++;
+
+        if (numberCounts[number - 1] >= 9){
+            numberButtons[number - 1].setEnabled(false);
+            System.out.println("Button " + number + " is disabled");
+        }
+    }
+
+    public void decrementNumberButton(int number){
+        if (number < 1 || number > 9) return;
+        if (numberCounts[number - 1] > 0){
+            numberCounts[number -1]--;
+        }
+
+        if (numberCounts[number - 1]  < 9){
+            numberButtons[number - 1].setEnabled(true);
+        }
+    }
+
     public int getSelectedNumber() {
         return selectedNumber;
     }
 
-    // Reset the selected number (if needed, for example, in a "Clear" button)
     public void resetSelectedNumber() {
         selectedNumber = 0;
     }
