@@ -8,7 +8,6 @@
  * 3 - 5026231174 - Muhamamd Razan Parisya Putra
  */
 
-
 package sudoku.src;
 
 import java.awt.*;
@@ -40,18 +39,27 @@ public class GameBoardPanel extends JPanel {
 
         // Create top panel for scores
         JPanel topPanel = new JPanel(new BorderLayout());
-        JPanel topRightPanel = new JPanel(new GridLayout(2, 1));
+        topPanel.setBackground(new Color(33, 37, 49));
+        JPanel topRightPanel = new JPanel(new BorderLayout());
+        topRightPanel.setBackground(new Color(33, 37, 49));
         JPanel bottomPanel = new JPanel(new BorderLayout());
+        bottomPanel.setBackground(new Color(33, 37, 49));
+
+        topPanel.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
 
         // Create fastest time label
         fastestTimeLabel = new JLabel("Fastest Time: N/A");
-        topRightPanel.add(fastestTimeLabel);
+        fastestTimeLabel.setFont(new Font("Figtree", Font.PLAIN, 14));
+        fastestTimeLabel.setForeground(Color.WHITE);
+        topRightPanel.add(fastestTimeLabel, BorderLayout.EAST);
 
         // Create current time label
         currentTimeLabel = new JLabel("Current Time: 0 seconds");
-        topRightPanel.add(currentTimeLabel);
+        currentTimeLabel.setFont(new Font("Figtree", Font.PLAIN, 14));
+        currentTimeLabel.setForeground(Color.WHITE);
+        topRightPanel.add(currentTimeLabel, BorderLayout.WEST);
 
-        topPanel.add(topRightPanel, BorderLayout.EAST);
+        topPanel.add(topRightPanel, BorderLayout.CENTER);
         add(topPanel, BorderLayout.NORTH);
 
         // Create number input panel
@@ -60,10 +68,14 @@ public class GameBoardPanel extends JPanel {
 
         // Create mistake label
         mistakeLabel = new JLabel("Mistakes: 0/3");
-        topPanel.add(mistakeLabel);
+        mistakeLabel.setFont(new Font("Figtree", Font.PLAIN, 14));
+        mistakeLabel.setForeground(Color.WHITE);
+        mistakeLabel.setBorder(BorderFactory.createEmptyBorder(0, 81, 0, 10));
+        topRightPanel.add(mistakeLabel, BorderLayout.CENTER);
 
         // Initialize the cells
         JPanel gridPanel = new JPanel(new GridLayout(SudokuConstants.GRID_SIZE, SudokuConstants.GRID_SIZE));
+        gridPanel.setBackground(new Color(33, 37, 49));
         for (int row = 0; row < SudokuConstants.GRID_SIZE; ++row) {
             for (int col = 0; col < SudokuConstants.GRID_SIZE; ++col) {
                 cells[row][col] = new Cell(row, col);
@@ -84,29 +96,6 @@ public class GameBoardPanel extends JPanel {
         setPreferredSize(new Dimension(BOARD_WIDTH, BOARD_HEIGHT));
         this.timer = timer;
         this.startTime = System.currentTimeMillis(); // Set waktu mulai permainan
-
-        // Create control panel with New Game, Easy Mode, Solve, and Hint buttons
-        JPanel controlPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        JButton newGameButton = new JButton("New Game");
-        newGameButton.setBackground(Color.BLACK);
-        newGameButton.setForeground(Color.WHITE);
-        newGameButton.addActionListener(e -> newGame());
-        JButton easyModeButton = new JButton("Easy Mode");
-        easyModeButton.setBackground(Color.BLACK);
-        easyModeButton.setForeground(Color.WHITE);
-        easyModeButton.addActionListener(e -> setDifficulty("Easy"));
-        JButton solveButton = new JButton("Solve");
-        solveButton.setBackground(Color.BLACK);
-        solveButton.setForeground(Color.WHITE);
-        solveButton.addActionListener(e -> solveGame());
-        JButton hintButton = new JButton("Hint");
-        hintButton.setBackground(Color.BLACK);
-        hintButton.setForeground(Color.WHITE);
-        hintButton.addActionListener(e -> giveHint());
-        controlPanel.add(solveButton);
-        controlPanel.add(hintButton);
-        add(controlPanel, BorderLayout.SOUTH);
-        
     }
 
     public void newGame() {
@@ -238,7 +227,7 @@ public class GameBoardPanel extends JPanel {
         currentTimeLabel.setText("Current Time: " + currentTime + " seconds");
     }
 
-    private void solveGame() {
+    public void solveGame() {
         // Logika untuk menyelesaikan permainan secara otomatis
         solveSudoku();
         timer.stop();
@@ -290,8 +279,8 @@ public class GameBoardPanel extends JPanel {
         }
         return true;
     }
-
-    private void giveHint() {
+    
+    public void giveHint() {
         Random rand = new Random();
         int maxAttempts = 100; // Batasan jumlah percobaan
         int attempts = 0;

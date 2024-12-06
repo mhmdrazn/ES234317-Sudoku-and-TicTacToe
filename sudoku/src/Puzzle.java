@@ -8,7 +8,7 @@
  * 3 - 5026231174 - Muhamamd Razan Parisya Putra
  */
 
-package src;
+package sudoku.src;
 
 import java.util.ArrayList;
 import java.util.Collections;
