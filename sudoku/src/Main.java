@@ -1,4 +1,4 @@
-package sudoku.src;
+package src;
 
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;

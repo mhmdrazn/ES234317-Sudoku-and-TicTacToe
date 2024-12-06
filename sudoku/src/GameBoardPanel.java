@@ -1,4 +1,4 @@
-package sudoku.src;
+package src;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -21,6 +21,8 @@ public class GameBoardPanel extends JPanel {
     private String difficultyLevel = "Easy";
     private JPanel numberInput; // Deklarasikan variabel numberInput
     private long startTime; // Waktu mulai permainan
+    private JLabel mistakeLabel;
+    private Mistake mistakeTracker = new Mistake();
 
     public GameBoardPanel(Timer timer) {
         super.setLayout(new BorderLayout());
@@ -44,6 +46,10 @@ public class GameBoardPanel extends JPanel {
         // Create number input panel
         numberInput = new JPanel(); // Inisialisasi variabel numberInput
         bottomPanel.add(numberInput, BorderLayout.NORTH);
+
+        // Create mistake label
+        mistakeLabel = new JLabel("Mistakes: 0/3");
+        topPanel.add(mistakeLabel);
 
         // Initialize the cells
         JPanel gridPanel = new JPanel(new GridLayout(SudokuConstants.GRID_SIZE, SudokuConstants.GRID_SIZE));
@@ -89,6 +95,7 @@ public class GameBoardPanel extends JPanel {
         controlPanel.add(solveButton);
         controlPanel.add(hintButton);
         add(controlPanel, BorderLayout.SOUTH);
+        
     }
 
     public void newGame() {
@@ -104,6 +111,10 @@ public class GameBoardPanel extends JPanel {
         // Reset timer
         this.startTime = System.currentTimeMillis();
         timer.start();
+
+        // Reset mistake tracker
+        mistakeTracker.reset();
+        mistakeLabel.setText("Mistakes: " + mistakeTracker.getMistake() + "/3");
     }
 
     public void resetGame() {
@@ -124,6 +135,14 @@ public class GameBoardPanel extends JPanel {
                 }
             }
         }
+
+        // Reset timer
+        this.startTime = System.currentTimeMillis();
+        timer.start();
+
+        // Reset mistake tracker
+        mistakeTracker.reset();
+        mistakeLabel.setText("Mistakes: " + mistakeTracker.getMistake() + "/3");
     }
 
     public boolean isSolved() {
@@ -151,6 +170,11 @@ public class GameBoardPanel extends JPanel {
                     sourceCell.status = CellStatus.CORRECT_GUESS;
                 } else {
                     sourceCell.status = CellStatus.WRONG_GUESS;
+                    mistakeTracker.change(); // Update mistake counter when a wrong guess is made
+                    mistakeLabel.setText("Mistakes: " + mistakeTracker.getMistake() + "/3");
+
+                    // Play sound effect when mistake happens
+                    mistakeTracker.playMistakeSound();
                 }
                 sourceCell.paint(); // re-paint this cell based on its status
 
@@ -161,7 +185,13 @@ public class GameBoardPanel extends JPanel {
                     JOptionPane.showMessageDialog(null, "Congratulations! You have solved the game in " + timeTaken + " seconds!");
                     updateTimes(timeTaken);
                 }
+
+                if (mistakeTracker.getMistake() >= Mistake.MAX_MISTAKES) {
+                    JOptionPane.showMessageDialog(null, "Game Over! You made too many mistakes.");
+                    mistakeTracker.playGameOverSound();
+                    timer.stop();
             }
+        }
         }
     }
 

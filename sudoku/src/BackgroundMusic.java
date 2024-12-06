@@ -1,4 +1,4 @@
-package sudoku.src;
+package src;
 
 import java.io.File;
 import javax.sound.sampled.AudioInputStream;
