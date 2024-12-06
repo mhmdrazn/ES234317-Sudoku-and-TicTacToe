@@ -19,11 +19,14 @@ public class SudokuMain extends JFrame {
 
    private Timer timer;
    private JLabel timerView;
+   private JLabel diffLabel;
    private int timeSecond = 0;
    private GameBoardPanel board;
    private JButton btnNewGame;
    private JButton btnReset;
    private JDialog pauseDialog;
+   private JComboBox btnDiff;
+   private String difficultyLevelLabel;
 
    public static int input = 0;
 
@@ -70,6 +73,18 @@ public class SudokuMain extends JFrame {
       // Create the game board
       board = new GameBoardPanel(timer);
       board.setBackground(new Color(33, 37, 49));
+
+      // Difficulity label
+      JLabel diffLabel = new JLabel("Difficulty: Easy");
+      diffLabel.setFont(new Font("Figtree", Font.PLAIN, 13));
+      diffLabel.setForeground(Color.WHITE);
+      diffLabel.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
+
+      // 
+      JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+      topPanel.setBackground(new Color(33, 37, 49));
+      topPanel.add(diffLabel, BorderLayout.PAGE_START);
+      topPanel.add(timerPanel, BorderLayout.PAGE_END);
       
       // Create the number panel and New Game button container
       JPanel bottomPanel = new JPanel(new BorderLayout());
@@ -95,6 +110,38 @@ public class SudokuMain extends JFrame {
       });
       bottomPanel.add(btnReset, BorderLayout.WEST);
 
+      // Difficulty button
+      btnDiff = new JComboBox(new String[] { "Easy", "Medium", "Hard" });
+      btnDiff.setBackground(new Color(33, 37, 49));
+      btnDiff.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 10));
+      btnDiff.setForeground(Color.WHITE);
+      btnDiff.setFocusable(false);
+      btnDiff.setFont(new Font("Figtree", Font.PLAIN, 12));
+      btnDiff.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+               String difficulty = (String) btnDiff.getSelectedItem();
+               diffLabel.setText("Difficulity : " + difficulty);
+               if (difficulty.equals("Easy")) {
+                  difficultyLevelLabel = "Easy";
+                  btnDiff.setSelectedItem("Easy");
+                  board.setDifficulty("easy");
+                  board.newGame();
+               } else if (difficulty.equals("Medium")) {
+                  difficultyLevelLabel = "Medium";
+                  btnDiff.setSelectedItem("Medium");
+                  board.setDifficulty("Medium");
+                  board.newGame();
+               } else if (difficulty.equals("Hard")) {
+                  btnDiff.setSelectedItem("Hard");
+                  difficultyLevelLabel = "Hard";
+                  board.setDifficulty("hard");
+                  board.newGame();
+               }
+            }
+      });
+      bottomPanel.add(btnDiff, BorderLayout.CENTER);
+
       // New Game button
       btnNewGame = new JButton("New Game");
       btnNewGame.setBackground(new Color(33, 37, 49));
@@ -111,7 +158,7 @@ public class SudokuMain extends JFrame {
 
       // Setup container
       cp.add(board, BorderLayout.CENTER);
-      cp.add(timerPanel, BorderLayout.NORTH);
+      cp.add(topPanel, BorderLayout.NORTH);
       cp.add(bottomPanel, BorderLayout.SOUTH);
 
       // Initialize the game board to start the game

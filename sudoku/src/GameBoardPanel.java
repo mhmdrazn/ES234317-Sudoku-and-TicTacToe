@@ -26,6 +26,7 @@ public class GameBoardPanel extends JPanel {
    private JLabel timerLabel;
    private Game status;
    private numberList numberInput;
+   private String difficultyLevel = "Easy";
 
 
    public GameBoardPanel(Timer timer) {
@@ -65,7 +66,7 @@ public class GameBoardPanel extends JPanel {
    }
 
    public void newGame() {
-      puzzle.newPuzzle(2);
+      puzzle.newPuzzle(this.difficultyLevel);
 
       // Initialize all the 9x9 cells, based on the puzzle.
       for (int row = 0; row < SudokuConstants.GRID_SIZE; ++row) {
@@ -85,6 +86,13 @@ public class GameBoardPanel extends JPanel {
                cells[i][j].status = CellStatus.TO_GUESS;
                cells[i][j].paint();
                cells[i][j].setEnabled(true);
+            }
+            if (cells[i][j].status == CellStatus.CORRECT_GUESS ||  cells[i][j].status == CellStatus.GIVEN){
+               cells[i][j].setEnabled(true);
+               timer.start();
+               if (cells[i][j].status == CellStatus.GIVEN){
+                  cells[i][j].setEnabled(false);
+               }
             }
          }
       }
@@ -126,5 +134,13 @@ public class GameBoardPanel extends JPanel {
             }
          }
       }
+   }
+
+   public void setDifficulty(String difficultyLevel) {
+      this.difficultyLevel = difficultyLevel;
+   }
+
+   public String getDifficulty() {
+      return difficultyLevel;
    }
 }
