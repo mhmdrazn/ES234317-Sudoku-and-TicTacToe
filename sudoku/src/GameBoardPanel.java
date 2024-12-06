@@ -3,7 +3,7 @@ package sudoku.src;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.Random;
-import javax.swing.*; 
+import javax.swing.*;
 
 public class GameBoardPanel extends JPanel {
     private static final long serialVersionUID = 1L;
@@ -21,8 +21,7 @@ public class GameBoardPanel extends JPanel {
     private String difficultyLevel = "Easy";
     private JPanel numberInput; // Deklarasikan variabel numberInput
     private long startTime; // Waktu mulai permainan
-  
-   
+
     public GameBoardPanel(Timer timer) {
         super.setLayout(new BorderLayout());
 
@@ -69,7 +68,7 @@ public class GameBoardPanel extends JPanel {
         this.timer = timer;
         this.startTime = System.currentTimeMillis(); // Set waktu mulai permainan
 
-        // Create control panel with New Game, Easy Mode, and Solve buttons
+        // Create control panel with New Game, Easy Mode, Solve, and Hint buttons
         JPanel controlPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         JButton newGameButton = new JButton("New Game");
         newGameButton.setBackground(Color.BLACK);
@@ -87,8 +86,9 @@ public class GameBoardPanel extends JPanel {
         hintButton.setBackground(Color.BLACK);
         hintButton.setForeground(Color.WHITE);
         hintButton.addActionListener(e -> giveHint());
-        add(hintButton, BorderLayout.SOUTH);
-        add(solveButton, BorderLayout.SOUTH);
+        controlPanel.add(solveButton);
+        controlPanel.add(hintButton);
+        add(controlPanel, BorderLayout.SOUTH);
     }
 
     public void newGame() {
@@ -183,11 +183,14 @@ public class GameBoardPanel extends JPanel {
         currentTimeLabel.setText("Current Time: " + currentTime + " seconds");
     }
 
- private void solveGame() {
+    private void solveGame() {
         // Logika untuk menyelesaikan permainan secara otomatis
         solveSudoku();
         timer.stop();
-        JOptionPane.showMessageDialog(null, "Game solved automatically!");
+        long endTime = System.currentTimeMillis();
+        long timeTaken = (endTime - startTime) / 1000; // Waktu dalam detik
+        JOptionPane.showMessageDialog(null, "Game solved automatically in " + timeTaken + " seconds!");
+        updateTimes(timeTaken);
     }
 
     private boolean solveSudoku() {
@@ -221,9 +224,12 @@ public class GameBoardPanel extends JPanel {
         }
         return true;
     }
-   private void giveHint() {
+
+    private void giveHint() {
         Random rand = new Random();
-        while (true) {
+        int maxAttempts = 100; // Batasan jumlah percobaan
+        int attempts = 0;
+        while (attempts < maxAttempts) {
             int row = rand.nextInt(SudokuConstants.GRID_SIZE);
             int col = rand.nextInt(SudokuConstants.GRID_SIZE);
             if (cells[row][col].getText().isEmpty()) {
@@ -235,6 +241,8 @@ public class GameBoardPanel extends JPanel {
                     }
                 }
             }
+            attempts++;
         }
+        JOptionPane.showMessageDialog(null, "No valid cell found for hint.");
     }
 }
