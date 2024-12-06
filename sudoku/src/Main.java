@@ -69,7 +69,7 @@ public class Main {
 
             // Play background music
             BackgroundMusic backgroundMusic = new BackgroundMusic();
-            backgroundMusic.playMusic("sudoku\\src\\bg-musik.wav");
+            backgroundMusic.playMusic("sudoku\\src\\audio\\bg-musik.wav");
 
             dialog.add(panel);
             dialog.pack();

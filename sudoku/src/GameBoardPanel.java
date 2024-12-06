@@ -8,7 +8,6 @@
  * 3 - 5026231174 - Muhamamd Razan Parisya Putra
  */
 
-
 package sudoku.src;
 
 import java.awt.*;
@@ -32,6 +31,8 @@ public class GameBoardPanel extends JPanel {
     private String difficultyLevel = "Easy";
     private JPanel numberInput; // Deklarasikan variabel numberInput
     private long startTime; // Waktu mulai permainan
+    private JLabel mistakeLabel;
+    private Mistake mistakeTracker = new Mistake();
 
     public GameBoardPanel(Timer timer) {
         super.setLayout(new BorderLayout());
@@ -64,6 +65,13 @@ public class GameBoardPanel extends JPanel {
         // Create number input panel
         numberInput = new JPanel(); // Inisialisasi variabel numberInput
         bottomPanel.add(numberInput, BorderLayout.NORTH);
+
+        // Create mistake label
+        mistakeLabel = new JLabel("Mistakes: 0/3");
+        mistakeLabel.setFont(new Font("Figtree", Font.PLAIN, 14));
+        mistakeLabel.setForeground(Color.WHITE);
+        mistakeLabel.setBorder(BorderFactory.createEmptyBorder(0, 81, 0, 10));
+        topRightPanel.add(mistakeLabel, BorderLayout.CENTER);
 
         // Initialize the cells
         JPanel gridPanel = new JPanel(new GridLayout(SudokuConstants.GRID_SIZE, SudokuConstants.GRID_SIZE));
@@ -103,6 +111,10 @@ public class GameBoardPanel extends JPanel {
         // Reset timer
         this.startTime = System.currentTimeMillis();
         timer.start();
+
+        // Reset mistake tracker
+        mistakeTracker.reset();
+        mistakeLabel.setText("Mistakes: " + mistakeTracker.getMistake() + "/3");
     }
 
     public void resetGame() {
@@ -123,6 +135,14 @@ public class GameBoardPanel extends JPanel {
                 }
             }
         }
+
+        // Reset timer
+        this.startTime = System.currentTimeMillis();
+        timer.start();
+
+        // Reset mistake tracker
+        mistakeTracker.reset();
+        mistakeLabel.setText("Mistakes: " + mistakeTracker.getMistake() + "/3");
     }
 
     public boolean isSolved() {
