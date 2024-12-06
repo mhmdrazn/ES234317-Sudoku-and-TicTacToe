@@ -12,12 +12,10 @@ package sudoku.src;
 
 import java.awt.Color;
 import java.awt.Font;
-
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JTextField;
 import javax.swing.border.LineBorder;
-import javax.swing.border.MatteBorder;
 
 /**
  * The Cell class model the cells of the Sudoku puzzle, by customizing (subclass)
@@ -57,6 +55,15 @@ public class Cell extends JButton {
         setBorder(new LineBorder(BORDER_COLOR));
         setCellBorder(row,col);
     }
+
+     public int getRow() {
+        return row;
+    }
+
+    public int getCol() {
+        return col;
+    }
+
 
     /** Reset this cell for a new game, given the puzzle number and isGiven */
     public void newGame(int number, boolean isGiven) {

@@ -132,6 +132,11 @@ public class GameBoardPanel extends JPanel {
                 if (cells[row][col].status == CellStatus.TO_GUESS || cells[row][col].status == CellStatus.WRONG_GUESS) {
                     return false;
                 }
+                // Tambahkan pengecekan apakah angka di cell valid
+                int numberIn = Integer.parseInt(cells[row][col].getText());
+                if (!isValid(row, col, numberIn)) {
+                    return false;
+                }
             }
         }
         return true;
@@ -144,25 +149,45 @@ public class GameBoardPanel extends JPanel {
             Cell sourceCell = (Cell) e.getSource();
 
             if (sourceCell.status == CellStatus.WRONG_GUESS || sourceCell.status == CellStatus.TO_GUESS) {
-                int numberIn = Integer.parseInt(sourceCell.getText());
-                System.out.println("You entered " + numberIn);
+                try {
+                    int numberIn = Integer.parseInt(sourceCell.getText());
+                    System.out.println("You entered " + numberIn);
 
-                if (numberIn == sourceCell.getNumber()) {
-                    sourceCell.status = CellStatus.CORRECT_GUESS;
-                } else {
+                    if (isValid(sourceCell.getRow(), sourceCell.getCol(), numberIn)) {
+                        sourceCell.status = CellStatus.CORRECT_GUESS;
+                        sourceCell.setForeground(Color.GREEN); // Ubah warna teks menjadi hijau jika valid
+                    } else {
+                        sourceCell.status = CellStatus.WRONG_GUESS;
+                        sourceCell.setForeground(Color.RED); // Ubah warna teks menjadi merah jika tidak valid
+                    }
+                    sourceCell.paint(); // re-paint this cell based on its status
+
+                    if (isSolved()) {
+                        timer.stop();
+                        long endTime = System.currentTimeMillis();
+                        long timeTaken = (endTime - startTime) / 1000; // Waktu dalam detik
+                        JOptionPane.showMessageDialog(null, "Congratulations! You have solved the game in " + timeTaken + " seconds!");
+                        updateTimes(timeTaken);
+                    } else if (isAllCellsFilled()) {
+                        JOptionPane.showMessageDialog(null, "Try again! Some cells are incorrect.");
+                    }
+                } catch (NumberFormatException ex) {
+                    sourceCell.setForeground(Color.RED); // Ubah warna teks menjadi merah jika input bukan angka
                     sourceCell.status = CellStatus.WRONG_GUESS;
-                }
-                sourceCell.paint(); // re-paint this cell based on its status
-
-                if (isSolved()) {
-                    timer.stop();
-                    long endTime = System.currentTimeMillis();
-                    long timeTaken = (endTime - startTime) / 1000; // Waktu dalam detik
-                    JOptionPane.showMessageDialog(null, "Congratulations! You have solved the game in " + timeTaken + " seconds!");
-                    updateTimes(timeTaken);
                 }
             }
         }
+    }
+
+    private boolean isAllCellsFilled() {
+        for (int row = 0; row < SudokuConstants.GRID_SIZE; ++row) {
+            for (int col = 0; col < SudokuConstants.GRID_SIZE; ++col) {
+                if (cells[row][col].getText().isEmpty()) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     public void setDifficulty(String difficultyLevel) {
@@ -217,9 +242,20 @@ public class GameBoardPanel extends JPanel {
     }
 
     private boolean isValid(int row, int col, int num) {
+        // Periksa baris dan kolom
         for (int i = 0; i < SudokuConstants.GRID_SIZE; i++) {
             if (cells[row][i].getText().equals(String.valueOf(num)) || cells[i][col].getText().equals(String.valueOf(num))) {
                 return false;
+            }
+        }
+        // Periksa subgrid 3x3
+        int boxRowStart = (row / 3) * 3;
+        int boxColStart = (col / 3) * 3;
+        for (int r = boxRowStart; r < boxRowStart + 3; r++) {
+            for (int c = boxColStart; c < boxColStart + 3; c++) {
+                if (cells[r][c].getText().equals(String.valueOf(num))) {
+                    return false;
+                }
             }
         }
         return true;
