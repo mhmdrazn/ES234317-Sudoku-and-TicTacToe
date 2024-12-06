@@ -106,4 +106,9 @@ public class Cell extends JButton {
     public int getNumber(){
         return number;
     }
+
+    public void setStatuss(CellStatus status) {
+        this.status = status;
+        paint();
+    }
 }
