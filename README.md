@@ -7,3 +7,24 @@ Group #4
 1 - 5026231012 - Zihni Aryanto Putra Buana<br/>
 2 - 5026231085 - Firmansyah Adi Prasetyo   
 3 - 5026231174 -  Muhammad Razan Parisya Putra   
+
+*** 
+
+### Sudoku Features  - Checkpoint 1
+
+| **Feature**               | **Status**                     | **Description**                                                                                 |  
+|---------------------------|--------------------------------|-------------------------------------------------------------------------------------------------|  
+| Timer                    | ✅ Implemented                | Displays elapsed time during the game.                                                        |  
+| Fastest Time Solved      | ✅ Implemented                | Tracks and displays the fastest completion time.                                              |  
+| Current Game Time Solved | ✅ Implemented                | Shows the time taken to solve the current game.                                               |  
+| Random Cell Generator    | ✅ Implemented                | Randomly generates Sudoku puzzle cells.                                                      |  
+| Music                    | ✅ Implemented                | Adds background music during gameplay.                                                       |  
+| Input Number             | WIP (Partial)                | Allows inputting numbers by clicking cells (does not yet validate correct guesses).          |  
+| Welcome Page             | ✅ Implemented                | Displays an introductory welcome screen before the game starts.                              |  
+| Mistakes Counter         | WIP (Partial)                | Tracks the number of mistakes but is not fully integrated yet.                               |  
+| Reset Answer             | ✅ Implemented                | Resets the player's current answers on the board.                                            |  
+| Pause Timer              | ✅ Implemented                | Enables pausing the game timer.                                                              |  
+| Number Counter           | WIP (Not Integrated)         | Counts how many times each number has been placed.                                           |  
+| Difficulty Selection     | ✅ Implemented                | Allows choosing between different difficulty levels (Easy, Medium, Hard).                   |  
+| Hint                     | ✅ Implemented                | Provides hints to help players solve the puzzle.                                             |  
+| Solve                    | ✅ Implemented                | Automatically solves the Sudoku puzzle.                                                      |  
