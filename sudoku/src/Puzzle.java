@@ -25,7 +25,7 @@ public class Puzzle {
     // The clues - isGiven (no need to guess) or need to guess
     boolean[][] isGiven = new boolean[SudokuConstants.GRID_SIZE][SudokuConstants.GRID_SIZE];
     int[][] playerGuesses = new int[SudokuConstants.GRID_SIZE][SudokuConstants.GRID_SIZE];
-
+    private int[][] solution;
     // Random number generator for additional randomness
     private Random random = new Random();
 
@@ -202,5 +202,8 @@ public class Puzzle {
 
     public boolean[][] getIsGiven() {
         return isGiven;
+    }
+    public int[][] getSolution() {
+        return solution;
     }
 }

@@ -27,10 +27,12 @@ public class SudokuMain extends JFrame {
    private JDialog pauseDialog;
    private JComboBox btnDiff;
    private String difficultyLevelLabel;
+   
 
    public static int input = 0;
 
    public SudokuMain() {
+      
       Container cp = getContentPane();
       cp.setLayout(new BorderLayout());
       cp.setBackground(new Color(33, 37, 49));
@@ -280,6 +282,7 @@ public class SudokuMain extends JFrame {
       String formattedTime = String.format("%02d:%02d", minutes, seconds);
       timerView.setText("Timer: " + formattedTime);
    }
+
 
    public static void main(String[] args) {
       SwingUtilities.invokeLater(() -> new SudokuMain());
