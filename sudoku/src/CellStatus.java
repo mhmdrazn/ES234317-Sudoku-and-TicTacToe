@@ -8,7 +8,7 @@
  * 3 - 5026231174 - Muhamamd Razan Parisya Putra
  */
 
-package sudoku.src;
+package src;
 public enum CellStatus {
     GIVEN,         // clue, no need to guess
     TO_GUESS,      // need to guess - not attempted yet

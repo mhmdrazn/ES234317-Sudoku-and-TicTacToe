@@ -8,7 +8,7 @@
  * 3 - 5026231174 - Muhamamd Razan Parisya Putra
  */
 
-package sudoku.src;
+package src;
 
 public class SudokuConstants {
     public static int GRID_SIZE = 9; // Default size

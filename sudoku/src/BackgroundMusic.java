@@ -1,3 +1,6 @@
+<<<<<<< HEAD
+package src;
+=======
 /**
  * ES234317-Algorithm and Data Structures
  * Semester Ganjil, 2024/2025
@@ -10,6 +13,7 @@
 
 
 package sudoku.src;
+>>>>>>> ef6db2b828bef0865c59e7bd2b820a3b444681b1
 
 import java.io.File;
 import javax.sound.sampled.AudioInputStream;
