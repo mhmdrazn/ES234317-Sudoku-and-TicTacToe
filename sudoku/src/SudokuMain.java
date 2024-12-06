@@ -78,19 +78,22 @@ public class SudokuMain extends JFrame {
 
       // Difficulity label
       JLabel diffLabel = new JLabel("Difficulty: Easy");
-      diffLabel.setFont(new Font("Figtree", Font.PLAIN, 13));
+      diffLabel.setFont(new Font("Figtree", Font.PLAIN, 14));
       diffLabel.setForeground(Color.WHITE);
       diffLabel.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
 
       // 
-      JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+      JPanel topPanel = new JPanel(new BorderLayout());
+      topPanel.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
       topPanel.setBackground(new Color(33, 37, 49));
-      topPanel.add(diffLabel, BorderLayout.PAGE_START);
-      topPanel.add(timerPanel, BorderLayout.PAGE_END);
+      topPanel.add(diffLabel, BorderLayout.WEST);
+      topPanel.add(timerPanel, BorderLayout.EAST);
       
       // Create the number panel and New Game button container
+      JPanel botPanel = new JPanel(new BorderLayout());
+      botPanel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+      botPanel.setBackground(new Color(33, 37, 49));
       JPanel bottomPanel = new JPanel(new BorderLayout());
-      bottomPanel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
       bottomPanel.setBackground(new Color(33, 37, 49));
       
       // Number Panel button
@@ -103,7 +106,7 @@ public class SudokuMain extends JFrame {
       btnReset.setBackground(new Color(33, 37, 49));
       btnReset.setForeground(Color.WHITE);
       btnReset.setFocusPainted(false);
-      btnReset.setFont(new Font("Figtree", Font.PLAIN, 12));
+      btnReset.setFont(new Font("Figtree", Font.PLAIN, 14));
       btnReset.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -118,7 +121,7 @@ public class SudokuMain extends JFrame {
       btnDiff.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 10));
       btnDiff.setForeground(Color.WHITE);
       btnDiff.setFocusable(false);
-      btnDiff.setFont(new Font("Figtree", Font.PLAIN, 12));
+      btnDiff.setFont(new Font("Figtree", Font.PLAIN, 14));
       btnDiff.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -144,12 +147,34 @@ public class SudokuMain extends JFrame {
       });
       bottomPanel.add(btnDiff, BorderLayout.CENTER);
 
+      JPanel bottomPanel1 = new JPanel(new BorderLayout());
+      bottomPanel1.setBackground(new Color(33, 37, 49));
+      bottomPanel1.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
+
+      // Create control panel with New Game, Easy Mode, and Solve buttons
+      JButton solveButton = new JButton("Solve");
+      solveButton.setBackground(new Color(33, 37, 49));
+      solveButton.setFont(new Font("Figtree", Font.PLAIN, 14));
+      solveButton.setForeground(Color.WHITE);
+      solveButton.setFocusPainted(false);
+      solveButton.addActionListener(e -> board.solveGame());
+      
+      JButton hintButton = new JButton("Hint");
+      hintButton.setBackground(new Color(33, 37, 49));
+      hintButton.setFont(new Font("Figtree", Font.PLAIN, 14));
+      hintButton.setFocusPainted(false);
+      hintButton.setForeground(Color.WHITE);
+      hintButton.addActionListener(e -> board.giveHint());
+      
+      bottomPanel1.add(hintButton, BorderLayout.WEST);
+      bottomPanel1.add(solveButton, BorderLayout.EAST);
+
       // New Game button
       btnNewGame = new JButton("New Game");
       btnNewGame.setBackground(new Color(33, 37, 49));
       btnNewGame.setForeground(Color.WHITE);
       btnNewGame.setFocusPainted(false);
-      btnNewGame.setFont(new Font("Figtree", Font.PLAIN, 12));
+      btnNewGame.setFont(new Font("Figtree", Font.PLAIN, 14));
       btnNewGame.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -157,11 +182,14 @@ public class SudokuMain extends JFrame {
             }
       });
       bottomPanel.add(btnNewGame, BorderLayout.EAST);
+      
+      botPanel.add(bottomPanel1, BorderLayout.SOUTH);
+      botPanel.add(bottomPanel, BorderLayout.NORTH);
 
       // Setup container
       cp.add(board, BorderLayout.CENTER);
       cp.add(topPanel, BorderLayout.NORTH);
-      cp.add(bottomPanel, BorderLayout.SOUTH);
+      cp.add(botPanel, BorderLayout.SOUTH);
 
       // Initialize the game board to start the game
       board.newGame();
