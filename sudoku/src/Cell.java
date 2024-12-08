@@ -56,7 +56,7 @@ public class Cell extends JButton {
         setCellBorder(row,col);
     }
 
-     public int getRow() {
+    public int getRow() {
         return row;
     }
 

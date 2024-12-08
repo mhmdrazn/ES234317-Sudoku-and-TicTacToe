@@ -24,6 +24,7 @@ public class GameBoardPanel extends JPanel {
     private Cell[][] cells = new Cell[SudokuConstants.GRID_SIZE][SudokuConstants.GRID_SIZE];
     private Puzzle puzzle = new Puzzle();
     private Timer timer;
+    private int timeSecond = 0;
     private JLabel fastestTimeLabel;
     private JLabel currentTimeLabel;
     private long fastestTime = Long.MAX_VALUE; // Inisialisasi dengan nilai maksimum
@@ -33,7 +34,8 @@ public class GameBoardPanel extends JPanel {
     private long startTime; // Waktu mulai permainan
     private JLabel mistakeLabel;
     private Mistake mistakeTracker = new Mistake();
-
+    private int hintCount = 0;
+    
     public GameBoardPanel(Timer timer) {
         super.setLayout(new BorderLayout());
 
@@ -115,6 +117,7 @@ public class GameBoardPanel extends JPanel {
         // Reset mistake tracker
         mistakeTracker.reset();
         mistakeLabel.setText("Mistakes: " + mistakeTracker.getMistake() + "/3");
+        resetHintCount();
     }
 
     public void resetGame() {
@@ -143,6 +146,7 @@ public class GameBoardPanel extends JPanel {
         // Reset mistake tracker
         mistakeTracker.reset();
         mistakeLabel.setText("Mistakes: " + mistakeTracker.getMistake() + "/3");
+        resetHintCount();
     }
 
     public boolean isSolved() {
@@ -166,21 +170,39 @@ public class GameBoardPanel extends JPanel {
         public void actionPerformed(ActionEvent e) {
             // Get a reference of the JTextField that triggers this action event
             Cell sourceCell = (Cell) e.getSource();
-
+    
             if (sourceCell.status == CellStatus.WRONG_GUESS || sourceCell.status == CellStatus.TO_GUESS) {
                 try {
                     int numberIn = Integer.parseInt(sourceCell.getText());
                     System.out.println("You entered " + numberIn);
-
+    
                     if (isValid(sourceCell.getRow(), sourceCell.getCol(), numberIn)) {
                         sourceCell.status = CellStatus.CORRECT_GUESS;
                         sourceCell.setForeground(Color.GREEN); // Ubah warna teks menjadi hijau jika valid
                     } else {
+                        // Track mistake
                         sourceCell.status = CellStatus.WRONG_GUESS;
                         sourceCell.setForeground(Color.RED); // Ubah warna teks menjadi merah jika tidak valid
+                        
+                        // Increment mistake count
+                        mistakeTracker.change();
+                        mistakeLabel.setText("Mistakes: " + mistakeTracker.getMistake() + "/3");
+                        
+                        // Play mistake sound
+                        mistakeTracker.playMistakeSound();
+                        
+                        // Check if game over (maximum mistakes reached)
+                        if (mistakeTracker.getMistake() >= Mistake.MAX_MISTAKES) {
+                            mistakeTracker.playGameOverSound();
+                            JOptionPane.showMessageDialog(null, "Game Over! You've reached maximum mistakes.");
+                            timer.stop();
+                            timer.restart();
+                            newGame();
+                            timer.start();
+                        }
                     }
                     sourceCell.paint(); // re-paint this cell based on its status
-
+    
                     if (isSolved()) {
                         timer.stop();
                         long endTime = System.currentTimeMillis();
@@ -191,8 +213,22 @@ public class GameBoardPanel extends JPanel {
                         JOptionPane.showMessageDialog(null, "Try again! Some cells are incorrect.");
                     }
                 } catch (NumberFormatException ex) {
-                    sourceCell.setForeground(Color.RED); // Ubah warna teks menjadi merah jika input bukan angka
+                    // Track mistake for non-numeric input
+                    sourceCell.setForeground(Color.RED);
                     sourceCell.status = CellStatus.WRONG_GUESS;
+                    
+                    mistakeTracker.change();
+                    mistakeLabel.setText("Mistakes: " + mistakeTracker.getMistake() + "/3");
+                    
+                    mistakeTracker.playMistakeSound();
+                    
+                    // Check if game over (maximum mistakes reached)
+                    if (mistakeTracker.getMistake() >= Mistake.MAX_MISTAKES) {
+                        mistakeTracker.playGameOverSound();
+                        JOptionPane.showMessageDialog(null, "Game Over! You've reached maximum mistakes.");
+                        newGame();
+                        timer.start();
+                    }
                 }
             }
         }
@@ -261,18 +297,22 @@ public class GameBoardPanel extends JPanel {
     }
 
     private boolean isValid(int row, int col, int num) {
-        // Periksa baris dan kolom
+        // Check row and column, excluding the current cell
         for (int i = 0; i < SudokuConstants.GRID_SIZE; i++) {
-            if (cells[row][i].getText().equals(String.valueOf(num)) || cells[i][col].getText().equals(String.valueOf(num))) {
+            if (i != col && cells[row][i].getText().equals(String.valueOf(num))) {
+                return false;
+            }
+            if (i != row && cells[i][col].getText().equals(String.valueOf(num))) {
                 return false;
             }
         }
-        // Periksa subgrid 3x3
+    
+        // Check subgrid 3x3, excluding the current cell
         int boxRowStart = (row / 3) * 3;
         int boxColStart = (col / 3) * 3;
         for (int r = boxRowStart; r < boxRowStart + 3; r++) {
             for (int c = boxColStart; c < boxColStart + 3; c++) {
-                if (cells[r][c].getText().equals(String.valueOf(num))) {
+                if ((r != row || c != col) && cells[r][c].getText().equals(String.valueOf(num))) {
                     return false;
                 }
             }
@@ -280,24 +320,65 @@ public class GameBoardPanel extends JPanel {
         return true;
     }
     
+    
     public void giveHint() {
+        // Determine max hints based on difficulty
+        int maxHints;
+        switch (difficultyLevel) {
+            case "Easy":
+                maxHints = 3;
+                break;
+            case "Medium":
+                maxHints = 5;
+                break;
+            case "Hard":
+                maxHints = 5;
+                break;
+            default:
+                maxHints = 5;
+        }
+    
+        // Check if hint limit is reached
+        if (hintCount >= maxHints) {
+            JOptionPane.showMessageDialog(null, "You've used all your hints for this difficulty level!");
+            return;
+        }
+    
         Random rand = new Random();
-        int maxAttempts = 100; // Batasan jumlah percobaan
-        int attempts = 0;
-        while (attempts < maxAttempts) {
+        int maxAttempts = 100;  // Increased to ensure a valid hint can be found
+        
+        for (int attempts = 0; attempts < maxAttempts; attempts++) {
             int row = rand.nextInt(SudokuConstants.GRID_SIZE);
             int col = rand.nextInt(SudokuConstants.GRID_SIZE);
+            
+            // Check if cell is empty and can be filled
             if (cells[row][col].getText().isEmpty()) {
                 for (int num = 1; num <= SudokuConstants.GRID_SIZE; num++) {
                     if (isValid(row, col, num)) {
                         cells[row][col].setText(String.valueOf(num));
                         cells[row][col].status = CellStatus.CORRECT_GUESS;
+                        cells[row][col].setForeground(Color.WHITE);  // Optional: distinguish hint cells
+                        
+                        // Increment hint count
+                        hintCount++;
+                        
+                        // Show remaining hints
+                        JOptionPane.showMessageDialog(null, 
+                            "Hint used! Remaining hints: " + (maxHints - hintCount)
+                        );
+                        
                         return;
                     }
                 }
             }
-            attempts++;
         }
-        JOptionPane.showMessageDialog(null, "No valid cell found for hint.");
+        
+        // If no valid hint found after many attempts
+        JOptionPane.showMessageDialog(null, "No valid hint could be found.");
+    }
+    
+    // Add a method to reset hint count when starting a new game
+    public void resetHintCount() {
+        hintCount = 0;
     }
 }
