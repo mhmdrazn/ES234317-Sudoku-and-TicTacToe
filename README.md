@@ -19,12 +19,11 @@ Group #4
 | Current Game Time Solved | ✅ Implemented                | Shows the time taken to solve the current game.                                               |  
 | Random Cell Generator    | ✅ Implemented                | Randomly generates Sudoku puzzle cells.                                                      |  
 | Music                    | ✅ Implemented                | Adds background music during gameplay.                                                       |  
-| Input Number             | WIP (Partial)                | Allows inputting numbers by clicking cells (does not yet validate correct guesses).          |  
+| Input Number             | ✅ Implemented                | Allows inputting numbers by clicking cells.          |  
 | Welcome Page             | ✅ Implemented                | Displays an introductory welcome screen before the game starts.                              |  
-| Mistakes Counter         | WIP (Partial)                | Tracks the number of mistakes but is not fully integrated yet.                               |  
+| Mistakes Counter         | ✅ Implemented                | Tracks the number of mistakes based on difficulty.                               |  
 | Reset Answer             | ✅ Implemented                | Resets the player's current answers on the board.                                            |  
-| Pause Timer              | ✅ Implemented                | Enables pausing the game timer.                                                              |  
-| Number Counter           | WIP (Not Integrated)         | Counts how many times each number has been placed.                                           |  
+| Pause Timer              | ✅ Implemented                | Enables pausing the game timer.                                                              |   
 | Difficulty Selection     | ✅ Implemented                | Allows choosing between different difficulty levels (Easy, Medium, Hard).                   |  
 | Hint                     | ✅ Implemented                | Provides hints to help players solve the puzzle.                                             |  
 | Solve                    | ✅ Implemented                | Automatically solves the Sudoku puzzle.                                                      |  
