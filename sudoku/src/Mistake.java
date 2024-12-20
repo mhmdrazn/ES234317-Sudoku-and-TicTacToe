@@ -58,7 +58,7 @@ public class Mistake extends JTextField {
     public void playMistakeSound() {
     try {
         // Load the sound file
-        File soundFile = new File("sudoku\\src\\audio\\mistakes.wav");
+        File soundFile = new File("sudoku/src/audio/mistakes.wav");
         AudioInputStream audioIn = AudioSystem.getAudioInputStream(soundFile);
         Clip clip = AudioSystem.getClip();
         clip.open(audioIn);
@@ -71,7 +71,7 @@ public class Mistake extends JTextField {
 public void playGameOverSound() {
     try {
         // Load the game over sound file
-        File soundFile = new File("sudoku\\src\\audio\\game-over.wav"); 
+        File soundFile = new File("sudoku/src/audio/game-over.wav"); 
         AudioInputStream audioStream = AudioSystem.getAudioInputStream(soundFile);
         Clip clip = AudioSystem.getClip();
         clip.open(audioStream);
