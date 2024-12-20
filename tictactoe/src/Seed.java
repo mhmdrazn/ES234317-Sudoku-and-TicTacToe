@@ -11,35 +11,51 @@
 package tictactoe.src;
 
 import java.awt.Image;
-import java.io.File;
-// import java.net.URL;
+import java.net.URL;
 import javax.swing.ImageIcon;
 
+/**
+ * Enum Seed digunakan untuk:
+ * 1. Player: mengambil nilai CROSS atau NOUGHT.
+ * 2. Cell content: mengambil nilai CROSS, NOUGHT, atau NO_SEED.
+ * 
+ * Setiap nilai juga memiliki ikon tampilan (teks atau gambar).
+ * Gambar dapat digambar dengan:
+ *   g.drawImage(content.getImage(), x, y, width, height, null);
+ */
 public enum Seed {
-   CROSS("X", "tictactoe/src/images/x.png"),
-   NOUGHT("O", "tictactoe/src/images/o.png"),
-   NO_SEED(" ", null);
+   CROSS("X", "tictactoe/src/images/cat.gif"),       // displayName, imageFilename
+   NOUGHT("O", "tictactoe/src/images/dog.gif"),
+   NO_SEED(" ", null);          // NO_SEED tidak memiliki gambar
 
-   private String displayName;
-   private Image img = null;
+   // Variabel instance
+   private final String displayName;
+   private final Image img;
 
+   // Konstruktor (harus private)
    private Seed(String name, String imageFilename) {
       this.displayName = name;
 
+      // Memuat gambar jika file path diberikan
       if (imageFilename != null) {
-         File imgFile = new File(imageFilename);
-         if (imgFile.exists()) {
-            ImageIcon icon = new ImageIcon(imageFilename);
-            img = icon.getImage();
+         URL imgURL = getClass().getClassLoader().getResource(imageFilename);
+         if (imgURL != null) {
+            this.img = new ImageIcon(imgURL).getImage();
          } else {
-            System.err.println("Couldn't find file " + imageFilename);
+            System.err.println("Error: File gambar '" + imageFilename + "' tidak ditemukan.");
+            this.img = null;
          }
+      } else {
+         this.img = null;
       }
    }
 
+   // Getter untuk displayName
    public String getDisplayName() {
       return displayName;
    }
+
+   // Getter untuk gambar
    public Image getImage() {
       return img;
    }
