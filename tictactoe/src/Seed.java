@@ -11,8 +11,7 @@
 package tictactoe.src;
 
 import java.awt.Image;
-import java.io.File;
-// import java.net.URL;
+import java.net.URL;
 import javax.swing.ImageIcon;
 
 public enum Seed {
@@ -20,26 +19,29 @@ public enum Seed {
    NOUGHT("O", "tictactoe/src/images/o.png"),
    NO_SEED(" ", null);
 
-   private String displayName;
-   private Image img = null;
+   private final String displayName;
+   private final Image img;
 
    private Seed(String name, String imageFilename) {
       this.displayName = name;
 
       if (imageFilename != null) {
-         File imgFile = new File(imageFilename);
-         if (imgFile.exists()) {
-            ImageIcon icon = new ImageIcon(imageFilename);
-            img = icon.getImage();
+         URL imgURL = getClass().getClassLoader().getResource(imageFilename);
+         if (imgURL != null) {
+            this.img = new ImageIcon(imgURL).getImage();
          } else {
-            System.err.println("Couldn't find file " + imageFilename);
+            System.err.println("Error: File gambar '" + imageFilename + "' tidak ditemukan.");
+            this.img = null;
          }
+      } else {
+         this.img = null;
       }
    }
 
    public String getDisplayName() {
       return displayName;
    }
+
    public Image getImage() {
       return img;
    }

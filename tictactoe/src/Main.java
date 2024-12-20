@@ -136,6 +136,10 @@ public class Main {
                 computerButton.setForeground(Color.WHITE);
                 computerButton.setBackground(new Color(239, 105, 80));
                 computerButton.setFocusPainted(false);
+                computerButton.addActionListener(_ -> {
+                    modeDialog.dispose();
+                    GameMain.main(new String[0]);
+                });
                 
                 // VS Computer Description
                 JLabel computerDesc = new JLabel("<html><center>Test your skills against our<br>advanced AI opponent!</center></html>");
@@ -155,14 +159,135 @@ public class Main {
                 modePanel.add(exitButton, BorderLayout.SOUTH);
                 
                 // Button actions
-                playerButton.addActionListener(e -> {
+                playerButton.addActionListener(_ -> {
                     modeDialog.dispose();
                     GameMain.main(new String[]{"player"});  // Pass mode as argument
                 });
                 
-                computerButton.addActionListener(e -> {
-                    modeDialog.dispose();
-                    GameMain.main(new String[]{"computer"});  // Pass mode as argument
+                computerButton.addActionListener(_ -> {
+                    // modeDialog.dispose();
+                    // GameMain.main(new String[]{"computer"});  // Pass mode as argument
+                    // Inside the computerButton.addActionListener, replace GameMain.main(new String[0]) with:
+
+                    // Create difficulty selection dialog
+                    JDialog difficultyDialog = new JDialog();
+                    difficultyDialog.setTitle("Select Difficulty Level");
+                    difficultyDialog.setModal(true);
+
+                    // Main panel with vertical layout
+                    JPanel difficultyPanel = new JPanel();
+                    difficultyPanel.setLayout(new BoxLayout(difficultyPanel, BoxLayout.Y_AXIS));
+                    difficultyPanel.setBackground(new Color(33, 37, 49));
+                    difficultyPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+
+                    // Title
+                    JLabel titleLabels = new JLabel("Choose Difficulty Level");
+                    titleLabels.setFont(new Font("Figtree", Font.BOLD, 18));
+                    titleLabels.setForeground(Color.WHITE);
+                    titleLabels.setAlignmentX(Component.CENTER_ALIGNMENT);
+                    difficultyPanel.add(titleLabels);
+                    difficultyPanel.add(Box.createRigidArea(new Dimension(0, 20)));
+
+                    // Easy Mode Container
+                    JPanel easyContainer = new JPanel(new BorderLayout());
+                    easyContainer.setBackground(new Color(33, 37, 49));
+                    easyContainer.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+                    JButton easyButton = new JButton("Easy - Random Move");
+                    easyButton.setFont(new Font("Figtree", Font.BOLD, 14));
+                    easyButton.setMaximumSize(new Dimension(200, 40));
+                    easyButton.setForeground(Color.WHITE);
+                    easyButton.setBackground(new Color(92, 184, 92)); // Green color
+                    easyButton.setFocusPainted(false);
+                    easyButton.addActionListener(_ -> {
+                        difficultyDialog.dispose();
+                        GameMain.main(new String[]{"aiGame", "easy"});
+                    });
+
+                    JLabel easyDesc = new JLabel("<html><center>Computer makes random moves.<br>Perfect for beginners!</center></html>");
+                    easyDesc.setFont(new Font("Figtree", Font.PLAIN, 12));
+                    easyDesc.setForeground(Color.WHITE);
+                    easyDesc.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+                    easyContainer.add(easyButton, BorderLayout.NORTH);
+                    easyContainer.add(easyDesc, BorderLayout.SOUTH);
+
+                    // Medium Mode Container
+                    JPanel mediumContainer = new JPanel(new BorderLayout());
+                    mediumContainer.setBackground(new Color(33, 37, 49));
+                    mediumContainer.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+                    JButton mediumButton = new JButton("Medium - Rule Based");
+                    mediumButton.setFont(new Font("Figtree", Font.BOLD, 14));
+                    mediumButton.setMaximumSize(new Dimension(200, 40));
+                    mediumButton.setForeground(Color.WHITE);
+                    mediumButton.setBackground(new Color(240, 173, 78)); // Orange color
+                    mediumButton.setFocusPainted(false);
+                    mediumButton.addActionListener(_ -> {
+                        difficultyDialog.dispose();
+                        GameMain.main(new String[]{"aiGame", "medium"});
+                    });
+
+                    JLabel mediumDesc = new JLabel("<html><center>Computer uses basic strategy rules.<br>For players with some experience.</center></html>");
+                    mediumDesc.setFont(new Font("Figtree", Font.PLAIN, 12));
+                    mediumDesc.setForeground(Color.WHITE);
+                    mediumDesc.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+                    mediumContainer.add(mediumButton, BorderLayout.NORTH);
+                    mediumContainer.add(mediumDesc, BorderLayout.SOUTH);
+
+                    // Hard Mode Container
+                    JPanel hardContainer = new JPanel(new BorderLayout());
+                    hardContainer.setBackground(new Color(33, 37, 49));
+                    hardContainer.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+                    JButton hardButton = new JButton("Hard - Minimax");
+                    hardButton.setFont(new Font("Figtree", Font.BOLD, 14));
+                    hardButton.setMaximumSize(new Dimension(200, 40));
+                    hardButton.setForeground(Color.WHITE);
+                    hardButton.setBackground(new Color(217, 83, 79)); // Red color
+                    hardButton.setFocusPainted(false);
+                    hardButton.addActionListener(_ -> {
+                        difficultyDialog.dispose();
+                        GameMain.main(new String[]{"aiGame", "hard"});
+                    });
+
+                    JLabel hardDesc = new JLabel("<html><center>Computer uses advanced AI algorithm.<br>Challenge yourself against the best!</center></html>");
+                    hardDesc.setFont(new Font("Figtree", Font.PLAIN, 12));
+                    hardDesc.setForeground(Color.WHITE);
+                    hardDesc.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+                    hardContainer.add(hardButton, BorderLayout.NORTH);
+                    hardContainer.add(hardDesc, BorderLayout.SOUTH);
+
+                    // Add components to panel
+                    difficultyPanel.add(easyContainer);
+                    difficultyPanel.add(Box.createRigidArea(new Dimension(0, 5)));
+                    difficultyPanel.add(mediumContainer);
+                    difficultyPanel.add(Box.createRigidArea(new Dimension(0, 5)));
+                    difficultyPanel.add(hardContainer);
+
+                    // Add back button
+                    JButton backButton = new JButton("Back");
+                    backButton.setFont(new Font("Figtree", Font.BOLD, 12));
+                    backButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+                    backButton.setMaximumSize(new Dimension(100, 35));
+                    backButton.setForeground(Color.WHITE);
+                    backButton.setBackground(new Color(33, 37, 49));
+                    backButton.setFocusPainted(false);
+                    backButton.addActionListener(_ -> {
+                        difficultyDialog.dispose();
+                        modeDialog.setVisible(true);
+                    });
+
+                    difficultyPanel.add(Box.createRigidArea(new Dimension(0, 15)));
+                    difficultyPanel.add(backButton);
+
+                    // Show dialog
+                    difficultyDialog.add(difficultyPanel);
+                    difficultyDialog.pack();
+                    difficultyDialog.setLocationRelativeTo(null);
+                    difficultyDialog.setVisible(true);
                 });
                 
                 modeDialog.add(modePanel);
@@ -186,10 +311,6 @@ public class Main {
             container.add(OthelloButton, BorderLayout.EAST);
 
             panel.add(container);
-
-            // Play background music
-            BackgroundMusic backgroundMusic = new BackgroundMusic();
-            backgroundMusic.playMusic("tictactoe\\src\\audio\\bg-musik.wav");
 
             dialog.add(panel);
             dialog.pack();
