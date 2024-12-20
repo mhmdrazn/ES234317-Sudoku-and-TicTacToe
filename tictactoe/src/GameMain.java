@@ -33,11 +33,12 @@ public class GameMain extends JPanel {
     private AIPlayer mediumAI;
     private AIPlayer hardAI;
     private AIPlayer dynamicAI;
+    private JButton restartButton;
 
     public GameMain() {
+        initGame();
 
-        
-      initGame();
+        // Inisialisasi AI (contoh AI)
         easyAI = new AIPlayerMedium(board);
         mediumAI = new AIPLayerEasy(board);
         hardAI = new AIPlayerHard(board);
@@ -49,6 +50,7 @@ public class GameMain extends JPanel {
         hardAI.setSeed(Seed.NOUGHT);
         dynamicAI.setSeed(Seed.NOUGHT);
 
+        // Mouse Listener
         super.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -105,6 +107,7 @@ public class GameMain extends JPanel {
             }
         });
 
+        // Set up the status bar (JLabel)
         statusBar = new JLabel();
         statusBar.setFont(FONT_STATUS);
         statusBar.setBackground(COLOR_BG_STATUS);
@@ -115,22 +118,39 @@ public class GameMain extends JPanel {
 
         super.setLayout(new BorderLayout());
         super.add(statusBar, BorderLayout.PAGE_END);
-        super.setPreferredSize(new Dimension(Board.CANVAS_WIDTH, Board.CANVAS_HEIGHT + 30));
+        super.setPreferredSize(new Dimension(Board.CANVAS_WIDTH, Board.CANVAS_HEIGHT + 80)); // Tinggi tambahan untuk tombol
         super.setBorder(BorderFactory.createLineBorder(COLOR_BG_STATUS, 2, false));
-         
+
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        restartButton = new JButton("Restart Game");
+        restartButton.setPreferredSize(new Dimension(150, 30));
+        restartButton.addActionListener(e -> restartGame());
+        buttonPanel.add(restartButton);
+
+        // Menambahkan tombol di bagian bawah
+        add(buttonPanel, BorderLayout.PAGE_END);
+
+
+        // Action Listener untuk Restart Game
+        restartButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                restartGame();
+            }
+        });
+
         newGame();
-        
     }
 
+    // Inisialisasi game
     public void initGame() {
         board = new Board();  // allocate the game-board
         SoundEffect.initGame(); // Pre-load all sound effects
         SoundEffect.playBackgroundMusic();  // Start playing background music
-
     }
 
+    // Memulai permainan baru
     public void newGame() {
-      
         for (int row = 0; row < Board.ROWS; ++row) {
             for (int col = 0; col < Board.COLS; ++col) {
                 board.cells[row][col].content = Seed.NO_SEED; // all cells empty
@@ -139,6 +159,11 @@ public class GameMain extends JPanel {
         currentPlayer = Seed.CROSS;    // cross plays first
         currentState = State.PLAYING;  // ready to play
         SoundEffect.playBackgroundMusic();
+    }
+
+    // Mengulang permainan
+    public void restartGame() {
+        newGame();
     }
 
     @Override
@@ -163,6 +188,7 @@ public class GameMain extends JPanel {
         }
     }
 
+    // Main method untuk menjalankan game
     public static void main(String[] args) {
         javax.swing.SwingUtilities.invokeLater(new Runnable() {
             public void run() {
