@@ -1,3 +1,13 @@
+/**
+ * ES234317-Algorithm and Data Structures
+ * Semester Ganjil, 2024/2025
+ * Group Capstone Project
+ * Group #4
+ * 1 - 5026231012 - Zihni Aryanto Putra Buana
+ * 2 - 5026231085 - Firmansyah Adi Prasetyo
+ * 3 - 5026231174 - Muhamamd Razan Parisya Putra
+ */
+
 package tictactoe.src;
 
 import java.awt.*;
@@ -143,7 +153,7 @@ public class GameMain extends JPanel {
         // Dropdown untuk tingkat kesulitan
         String[] difficulties = {"Easy", "Medium", "Hard", "Dynamic"};
         difficultyDropdown = new JComboBox<>(difficulties);
-        difficultyDropdown.addActionListener(e -> {
+        difficultyDropdown.addActionListener(_ -> {
             String selected = (String) difficultyDropdown.getSelectedItem();
             switch (selected) {
                 case "Easy":
@@ -173,7 +183,7 @@ public class GameMain extends JPanel {
         restartButton.setBackground(new Color(33, 37, 49));
         restartButton.setFont(new Font("Figtree", Font.BOLD, 14));
         restartButton.setPreferredSize(new Dimension(150, 30));
-        restartButton.addActionListener(e -> restartGame());
+        restartButton.addActionListener(_ -> restartGame());
         controlPanel.add(restartButton);
 
         // Tambahkan panel gabungan ke posisi PAGE_END

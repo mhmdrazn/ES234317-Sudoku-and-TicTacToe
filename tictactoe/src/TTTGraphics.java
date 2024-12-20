@@ -1,3 +1,14 @@
+/**
+ * ES234317-Algorithm and Data Structures
+ * Semester Ganjil, 2024/2025
+ * Group Capstone Project
+ * Group #4
+ * 1 - 5026231012 - Zihni Aryanto Putra Buana
+ * 2 - 5026231085 - Firmansyah Adi Prasetyo
+ * 3 - 5026231174 - Muhamamd Razan Parisya Putra
+ */
+
+
 package tictactoe.src;
 
 import java.awt.*;
@@ -132,19 +143,19 @@ public class TTTGraphics extends JFrame {
 
       // Compute and return the new game state
       if (board[selectedRow][0] == player  // 3-in-the-row
-                && board[selectedRow][1] == player
-                && board[selectedRow][2] == player
+               && board[selectedRow][1] == player
+               && board[selectedRow][2] == player
              || board[0][selectedCol] == player // 3-in-the-column
-                && board[1][selectedCol] == player
-                && board[2][selectedCol] == player
+               && board[1][selectedCol] == player
+               && board[2][selectedCol] == player
              || selectedRow == selectedCol  // 3-in-the-diagonal
-                && board[0][0] == player
-                && board[1][1] == player
-                && board[2][2] == player
+               && board[0][0] == player
+               && board[1][1] == player
+               && board[2][2] == player
              || selectedRow + selectedCol == 2 // 3-in-the-opposite-diagonal
-                && board[0][2] == player
-                && board[1][1] == player
-                && board[2][0] == player) {
+               && board[0][2] == player
+               && board[1][1] == player
+               && board[2][0] == player) {
          return (player == Seed.CROSS) ? State.CROSS_WON : State.NOUGHT_WON;
       } else {
          // Nobody win. Check for DRAW (all cells occupied) or PLAYING.

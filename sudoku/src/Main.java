@@ -61,7 +61,7 @@ public class Main {
             // okButton.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
             okButton.setFocusPainted(false);
             okButton.setBackground(new Color(33, 37, 49));
-            okButton.addActionListener(e -> {
+            okButton.addActionListener(_ -> {
                 dialog.dispose();
                 new SudokuMain();
             });

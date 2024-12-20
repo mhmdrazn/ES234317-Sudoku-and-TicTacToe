@@ -24,7 +24,6 @@ public class GameBoardPanel extends JPanel {
     private Cell[][] cells = new Cell[SudokuConstants.GRID_SIZE][SudokuConstants.GRID_SIZE];
     private Puzzle puzzle = new Puzzle();
     private Timer timer;
-    private int timeSecond = 0;
     private JLabel fastestTimeLabel;
     private JLabel currentTimeLabel;
     private long fastestTime = Long.MAX_VALUE; // Inisialisasi dengan nilai maksimum

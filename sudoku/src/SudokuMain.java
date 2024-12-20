@@ -157,14 +157,14 @@ public class SudokuMain extends JFrame {
       solveButton.setFont(new Font("Figtree", Font.PLAIN, 14));
       solveButton.setForeground(Color.WHITE);
       solveButton.setFocusPainted(false);
-      solveButton.addActionListener(e -> board.solveGame());
+      solveButton.addActionListener(_ -> board.solveGame());
       
       JButton hintButton = new JButton("Hint");
       hintButton.setBackground(new Color(33, 37, 49));
       hintButton.setFont(new Font("Figtree", Font.PLAIN, 14));
       hintButton.setFocusPainted(false);
       hintButton.setForeground(Color.WHITE);
-      hintButton.addActionListener(e -> board.giveHint());
+      hintButton.addActionListener(_ -> board.giveHint());
       
       bottomPanel1.add(hintButton, BorderLayout.WEST);
       bottomPanel1.add(solveButton, BorderLayout.EAST);
