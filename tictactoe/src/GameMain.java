@@ -25,6 +25,7 @@ public class GameMain extends JPanel {
     private AIPlayer dynamicAI;
     private JButton restartButton;
     private AIPlayer currentAI;
+    private JComboBox<String> difficultyDropdown;
 
     public GameMain(boolean isAIGame, String difficulty) {
         this.isAIGame = isAIGame;
@@ -135,21 +136,57 @@ public class GameMain extends JPanel {
         super.setPreferredSize(new Dimension(Board.CANVAS_WIDTH, Board.CANVAS_HEIGHT + 80));
         super.setBorder(BorderFactory.createLineBorder(COLOR_BG_STATUS, 2, false));
 
-        // Button panel setup
-        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        buttonPanel.setBorder(BorderFactory.createEmptyBorder(4, 15, 4, 15));
+        // Tambahkan di bagian constructor
+        // Panel untuk menggabungkan dropdown dan tombol restart
+        JPanel controlPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
 
+        // Dropdown untuk tingkat kesulitan
+        String[] difficulties = {"Easy", "Medium", "Hard", "Dynamic"};
+        difficultyDropdown = new JComboBox<>(difficulties);
+        difficultyDropdown.addActionListener(e -> {
+            String selected = (String) difficultyDropdown.getSelectedItem();
+            switch (selected) {
+                case "Easy":
+                    currentAI = easyAI;
+                    break;
+                case "Medium":
+                    currentAI = mediumAI;
+                    break;
+                case "Hard":
+                    currentAI = hardAI;
+                    break;
+                case "Dynamic":
+                    currentAI = dynamicAI;
+                    break;
+            }
+            restartGame();
+            repaint();
+            currentAI.setSeed(Seed.NOUGHT); // AI selalu O
+
+        });
+        controlPanel.add(difficultyDropdown);
+
+        // Tombol Restart
         restartButton = new JButton("Restart Game");
         restartButton.setForeground(new Color(255, 255, 255));
         restartButton.setFocusPainted(false);
         restartButton.setBackground(new Color(33, 37, 49));
         restartButton.setFont(new Font("Figtree", Font.BOLD, 14));
         restartButton.setPreferredSize(new Dimension(150, 30));
-        restartButton.addActionListener(_ -> restartGame());
-        buttonPanel.add(restartButton);
+        restartButton.addActionListener(e -> restartGame());
+        controlPanel.add(restartButton);
 
-        add(buttonPanel, BorderLayout.PAGE_END);
-        
+        // Tambahkan panel gabungan ke posisi PAGE_END
+        super.add(controlPanel, BorderLayout.PAGE_END);
+
+        // Action Listener untuk Restart Game
+        restartButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                restartGame();
+            }
+        });
+
         newGame();
     }
 
@@ -210,6 +247,7 @@ public class GameMain extends JPanel {
                 frame.setContentPane(new GameMain(isAIGame, difficulty));
                 frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                 frame.pack();
+                frame.setSize(400, 500); // Atur ukuran
                 frame.setLocationRelativeTo(null);
                 frame.setVisible(true);
             }
