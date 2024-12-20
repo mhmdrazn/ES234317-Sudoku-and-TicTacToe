@@ -84,7 +84,7 @@ public class Cell extends JButton {
             // Inherited from JTextField: Set display properties
             super.setText("");
             super.setEnabled(true);
-            super.addActionListener( e -> {
+            super.addActionListener( _ -> {
                 if(status == CellStatus.TO_GUESS || status == CellStatus.WRONG_GUESS){
                     setText("" + SudokuMain.input);
                 }

@@ -1,16 +1,22 @@
+/**
+ * ES234317-Algorithm and Data Structures
+ * Semester Ganjil, 2024/2025
+ * Group Capstone Project
+ * Group #4
+ * 1 - 5026231012 - Zihni Aryanto Putra Buana
+ * 2 - 5026231085 - Firmansyah Adi Prasetyo
+ * 3 - 5026231174 - Muhamamd Razan Parisya Putra
+ */
+
 package tictactoe.src;
 
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
-/**
- * Tic-Tac-Toe: Two-player Graphic version with better OO design.
- * The Board and Cell classes are separated in their own classes.
- */
-public class GameMain extends JPanel {
-   private static final long serialVersionUID = 1L; // to prevent serializable warning
 
-   // Define named constants for the drawing graphics
+public class GameMain extends JPanel {
+   private static final long serialVersionUID = 1L;
+
    public static final String TITLE = "Tic Tac Toe";
    public static final Color COLOR_BG = Color.WHITE;
    public static final Color COLOR_BG_STATUS = new Color(216, 216, 216);
@@ -18,48 +24,86 @@ public class GameMain extends JPanel {
    public static final Color COLOR_NOUGHT = new Color(64, 154, 225); // Blue #409AE1
    public static final Font FONT_STATUS = new Font("OCR A Extended", Font.PLAIN, 14);
 
-   // Define game objects
-   private Board board;         // the game board
-   private State currentState;  // the current state of the game
-   private Seed currentPlayer;  // the current player
-   private JLabel statusBar;    // for displaying status message
+   private boolean isAIGame = true;
+   private Board board;   
+   private State currentState;  
+   private Seed currentPlayer;  
+   private JLabel statusBar;
+   private AIPlayer easyAI;
+   private AIPlayer mediumAI;
+   private AIPlayer hardAI;
+   private AIPlayer dynamicAI;
 
-   /** Constructor to setup the UI and game components */
    public GameMain() {
 
-      // This JPanel fires MouseEvent
+      initGame();
+      
+      easyAI = new AIPlayerMedium(board);
+      mediumAI = new AIPLayerEasy(board);
+      hardAI = new AIPlayerHard(board);
+      dynamicAI = new AIPlayerDynamic(board);
+
+      // AI plays as O (Nought)
+      easyAI.setSeed(Seed.NOUGHT);
+      mediumAI.setSeed(Seed.NOUGHT);
+      hardAI.setSeed(Seed.NOUGHT);
+      dynamicAI.setSeed(Seed.NOUGHT);
+
       super.addMouseListener(new MouseAdapter() {
          @Override
-         public void mouseClicked(MouseEvent e) {  // mouse-clicked handler
+         public void mouseClicked(MouseEvent e) {
             int mouseX = e.getX();
             int mouseY = e.getY();
-            // Get the row and column clicked
+
             int row = mouseY / Cell.SIZE;
             int col = mouseX / Cell.SIZE;
 
             if (currentState == State.PLAYING) {
                if (row >= 0 && row < Board.ROWS && col >= 0 && col < Board.COLS
                      && board.cells[row][col].content == Seed.NO_SEED) {
-                  // Update cells[][] and return the new game state after the move
+
+                  // Human move
                   currentState = board.stepGame(currentPlayer, row, col);
-                  // Play appropriate sound clip
-                    if (currentState == State.PLAYING) {
-                        SoundEffect.EAT_FOOD.play();
-                    } else {
-                        SoundEffect.DIE.play();
-                    }
-                  // Switch player
-                  currentPlayer = (currentPlayer == Seed.CROSS) ? Seed.NOUGHT : Seed.CROSS;
+                  if (currentState == State.PLAYING) {
+                     SoundEffect.EAT_FOOD.play();
+                  } else {
+                     SoundEffect.DIE.play();
+                  }
+                     
+                  // AI Move
+                  currentPlayer = Seed.NOUGHT;
+
+                  if (currentState == State.PLAYING & isAIGame){
+                     Timer timer = new Timer(800, new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent evt){
+                           // AI move
+                           int[] aiMove = hardAI.move();
+                           if (aiMove != null){
+                              currentState = board.stepGame(currentPlayer, aiMove[0], aiMove[1]);
+                              if (currentState == State.PLAYING){
+                                 SoundEffect.EAT_FOOD.play();
+                              } else {
+                                 SoundEffect.DIE.play();
+                              }
+
+                              currentPlayer = Seed.CROSS;
+                              repaint();
+                           }
+                        }
+                     });
+
+                     timer.setRepeats(false);
+                     timer.start();
+                  }  
                }
-            } else {        // game over
-               newGame();  // restart the game
+            } else {
+               newGame();
             }
-            // Refresh the drawing canvas
-            repaint();  // Callback paintComponent().
+            repaint();
          }
       });
 
-      // Setup the status bar (JLabel) to display status message
       statusBar = new JLabel();
       statusBar.setFont(FONT_STATUS);
       statusBar.setBackground(COLOR_BG_STATUS);
@@ -69,22 +113,17 @@ public class GameMain extends JPanel {
       statusBar.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 12));
 
       super.setLayout(new BorderLayout());
-      super.add(statusBar, BorderLayout.PAGE_END); // same as SOUTH
+      super.add(statusBar, BorderLayout.PAGE_END);
       super.setPreferredSize(new Dimension(Board.CANVAS_WIDTH, Board.CANVAS_HEIGHT + 30));
-            // account for statusBar in height
       super.setBorder(BorderFactory.createLineBorder(COLOR_BG_STATUS, 2, false));
 
-      // Set up Game
-      initGame();
       newGame();
    }
 
-   /** Initialize the game (run once) */
    public void initGame() {
       board = new Board();  // allocate the game-board
    }
 
-   /** Reset the game-board contents and the current-state, ready for new game */
    public void newGame() {
       for (int row = 0; row < Board.ROWS; ++row) {
          for (int col = 0; col < Board.COLS; ++col) {
@@ -95,15 +134,13 @@ public class GameMain extends JPanel {
       currentState = State.PLAYING;  // ready to play
    }
 
-   /** Custom painting codes on this JPanel */
    @Override
-   public void paintComponent(Graphics g) {  // Callback via repaint()
+   public void paintComponent(Graphics g) {
       super.paintComponent(g);
-      setBackground(COLOR_BG); // set its background color
+      setBackground(COLOR_BG);
 
       board.paint(g);  // ask the game board to paint itself
 
-      // Print status-bar message
       if (currentState == State.PLAYING) {
          statusBar.setForeground(Color.BLACK);
          statusBar.setText((currentPlayer == Seed.CROSS) ? "X's Turn" : "O's Turn");
@@ -119,18 +156,15 @@ public class GameMain extends JPanel {
       }
    }
 
-   /** The entry "main" method */
    public static void main(String[] args) {
-      // Run GUI construction codes in Event-Dispatching thread for thread safety
       javax.swing.SwingUtilities.invokeLater(new Runnable() {
          public void run() {
             JFrame frame = new JFrame(TITLE);
-            // Set the content-pane of the JFrame to an instance of main JPanel
             frame.setContentPane(new GameMain());
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             frame.pack();
-            frame.setLocationRelativeTo(null); // center the application window
-            frame.setVisible(true);            // show it
+            frame.setLocationRelativeTo(null);
+            frame.setVisible(true);
          }
       });
    }
