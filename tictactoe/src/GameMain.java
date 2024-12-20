@@ -28,22 +28,27 @@ public class GameMain extends JPanel {
     private Board board;
     private State currentState;
     private Seed currentPlayer;
+    private AIPlayer currentAI;
     private JLabel statusBar;
     private AIPlayer easyAI;
     private AIPlayer mediumAI;
     private AIPlayer hardAI;
     private AIPlayer dynamicAI;
     private JButton restartButton;
+    private JComboBox<String> difficultyDropdown;
 
     public GameMain() {
         initGame();
 
         // Inisialisasi AI (contoh AI)
-        easyAI = new AIPlayerMedium(board);
-        mediumAI = new AIPLayerEasy(board);
+        easyAI = new AIPLayerEasy(board);
+        mediumAI = new AIPlayerMedium(board);
         hardAI = new AIPlayerHard(board);
         dynamicAI = new AIPlayerDynamic(board);
 
+        // Set default AI
+        currentAI = easyAI; // Default ke easy 
+        currentAI.setSeed(Seed.NOUGHT);
         // AI plays as O (Nought)
         easyAI.setSeed(Seed.NOUGHT);
         mediumAI.setSeed(Seed.NOUGHT);
@@ -81,7 +86,7 @@ public class GameMain extends JPanel {
                                 @Override
                                 public void actionPerformed(ActionEvent evt) {
                                     // AI move
-                                    int[] aiMove = hardAI.move();
+                                    int[] aiMove = currentAI.move();
                                     if (aiMove != null) {
                                         currentState = board.stepGame(currentPlayer, aiMove[0], aiMove[1]);
                                         if (currentState == State.PLAYING) {
@@ -121,15 +126,43 @@ public class GameMain extends JPanel {
         super.setPreferredSize(new Dimension(Board.CANVAS_WIDTH, Board.CANVAS_HEIGHT + 80)); // Tinggi tambahan untuk tombol
         super.setBorder(BorderFactory.createLineBorder(COLOR_BG_STATUS, 2, false));
 
-        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        // Tambahkan di bagian constructor
+// Panel untuk menggabungkan dropdown dan tombol restart
+        JPanel controlPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+
+// Dropdown untuk tingkat kesulitan
+        String[] difficulties = {"Easy", "Medium", "Hard", "Dynamic"};
+        difficultyDropdown = new JComboBox<>(difficulties);
+        difficultyDropdown.addActionListener(e -> {
+            String selected = (String) difficultyDropdown.getSelectedItem();
+            switch (selected) {
+                case "Easy":
+                    currentAI = easyAI;
+                    break;
+                case "Medium":
+                    currentAI = mediumAI;
+                    break;
+                case "Hard":
+                    currentAI = hardAI;
+                    break;
+                case "Dynamic":
+                    currentAI = dynamicAI;
+                    break;
+            }
+            currentAI.setSeed(Seed.NOUGHT); // AI selalu O
+           
+
+        });
+        controlPanel.add(difficultyDropdown);
+
+// Tombol Restart
         restartButton = new JButton("Restart Game");
         restartButton.setPreferredSize(new Dimension(150, 30));
         restartButton.addActionListener(e -> restartGame());
-        buttonPanel.add(restartButton);
+        controlPanel.add(restartButton);
 
-        // Menambahkan tombol di bagian bawah
-        add(buttonPanel, BorderLayout.PAGE_END);
-
+// Tambahkan panel gabungan ke posisi PAGE_END
+        super.add(controlPanel, BorderLayout.PAGE_END);
 
         // Action Listener untuk Restart Game
         restartButton.addActionListener(new ActionListener() {
@@ -197,6 +230,7 @@ public class GameMain extends JPanel {
                 frame.setContentPane(new GameMain());
                 frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                 frame.pack();
+                frame.setSize(400, 500); // Atur ukuran
                 frame.setLocationRelativeTo(null);
                 frame.setVisible(true);
             }
