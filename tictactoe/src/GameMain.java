@@ -159,6 +159,7 @@ public class GameMain extends JPanel {
         currentPlayer = Seed.CROSS;    // cross plays first
         currentState = State.PLAYING;  // ready to play
         SoundEffect.playBackgroundMusic();
+        repaint();
     }
 
     // Mengulang permainan
