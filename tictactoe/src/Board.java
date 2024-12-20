@@ -46,18 +46,6 @@ public class Board {
       }
    }
 
-   public void clear() {
-        for (int row = 0; row < ROWS; ++row) {
-            for (int col = 0; col < COLS; ++col) {
-                cells[row][col].content = Seed.NO_SEED;
-            }
-        }
-    }
-
-    public boolean isCellEmpty(int row, int col) {
-        return cells[row][col].content == Seed.NO_SEED;
-    }
-
    public State stepGame(Seed player, int selectedRow, int selectedCol) {
       cells[selectedRow][selectedCol].content = player;
 
