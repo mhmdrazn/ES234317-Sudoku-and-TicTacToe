@@ -1,8 +1,15 @@
+/**
+ * ES234317-Algorithm and Data Structures
+ * Semester Ganjil, 2024/2025
+ * Group Capstone Project
+ * Group #4
+ * 1 - 5026231012 - Zihni Aryanto Putra Buana
+ * 2 - 5026231085 - Firmansyah Adi Prasetyo
+ * 3 - 5026231174 - Muhamamd Razan Parisya Putra
+ */
+
 package tictactoe.src;
 
-/**
- *  The enum State contains the various game states of the TTT game
- */
-public enum State {  // to save as "State.java"
+public enum State {
    PLAYING, DRAW, CROSS_WON, NOUGHT_WON, GAME_OVER
 }

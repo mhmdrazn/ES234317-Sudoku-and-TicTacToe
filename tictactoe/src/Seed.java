@@ -1,32 +1,28 @@
+/**
+ * ES234317-Algorithm and Data Structures
+ * Semester Ganjil, 2024/2025
+ * Group Capstone Project
+ * Group #4
+ * 1 - 5026231012 - Zihni Aryanto Putra Buana
+ * 2 - 5026231085 - Firmansyah Adi Prasetyo
+ * 3 - 5026231174 - Muhamamd Razan Parisya Putra
+ */
+
 package tictactoe.src;
 
 import java.awt.Image;
 import java.io.File;
-import java.net.URL;
+// import java.net.URL;
 import javax.swing.ImageIcon;
-/**
- * This enum is used by:
- * 1. Player: takes value of CROSS or NOUGHT
- * 2. Cell content: takes value of CROSS, NOUGHT, or NO_SEED.
- *
- * We also attach a display image icon (text or image) for the items.
- *   and define the related variable/constructor/getter.
- * To draw the image:
- *   g.drawImage(content.getImage(), x, y, width, height, null);
- *
- * Ideally, we should define two enums with inheritance, which is,
- *  however, not supported.
- */
-public enum Seed {   // to save as "Seed.java"
-   CROSS("X", "tictactoe/src/images/catjam-cat.gif"),   // displayName, imageFilename
-   NOUGHT("O", "tictactoe/src/images/dog-pov.gif"),
+
+public enum Seed {
+   CROSS("X", "tictactoe/src/images/x.png"),
+   NOUGHT("O", "tictactoe/src/images/o.png"),
    NO_SEED(" ", null);
 
-   // Private variables
    private String displayName;
    private Image img = null;
 
-   // Constructor (must be private)
    private Seed(String name, String imageFilename) {
       this.displayName = name;
 
@@ -41,7 +37,6 @@ public enum Seed {   // to save as "Seed.java"
       }
    }
 
-   // Public getters
    public String getDisplayName() {
       return displayName;
    }

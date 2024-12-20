@@ -203,3 +203,4 @@ public class TTTGraphicsOthello extends JFrame {
       SwingUtilities.invokeLater(TTTGraphics::new);
    }
 }
+   
