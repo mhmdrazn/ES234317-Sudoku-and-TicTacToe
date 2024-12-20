@@ -1,12 +1,3 @@
-/**
- * ES234317-Algorithm and Data Structures
- * Semester Ganjil, 2024/2025
- * Group Capstone Project
- * Group #4
- * 1 - 5026231012 - Zihni Aryanto Putra Buana
- * 2 - 5026231085 - Firmansyah Adi Prasetyo
- * 3 - 5026231174 - Muhamamd Razan Parisya Putra
- *   */
 package tictactoe.src;
 
 import java.awt.*;
@@ -14,7 +5,6 @@ import java.awt.event.*;
 import javax.swing.*;
 
 public class GameMain extends JPanel {
-
     private static final long serialVersionUID = 1L;
 
     public static final String TITLE = "Tic Tac Toe";
@@ -22,40 +12,55 @@ public class GameMain extends JPanel {
     public static final Color COLOR_BG_STATUS = new Color(216, 216, 216);
     public static final Color COLOR_CROSS = new Color(239, 105, 80);  // Red #EF6950
     public static final Color COLOR_NOUGHT = new Color(64, 154, 225); // Blue #409AE1
-    public static final Font FONT_STATUS = new Font("OCR A Extended", Font.PLAIN, 14);
+    public static final Font FONT_STATUS = new Font("Figtree", Font.PLAIN, 14);
 
-    private boolean isAIGame = true;
+    private boolean isAIGame;
     private Board board;
     private State currentState;
     private Seed currentPlayer;
-    private AIPlayer currentAI;
     private JLabel statusBar;
     private AIPlayer easyAI;
     private AIPlayer mediumAI;
     private AIPlayer hardAI;
     private AIPlayer dynamicAI;
     private JButton restartButton;
+    private AIPlayer currentAI;
     private JComboBox<String> difficultyDropdown;
 
-    public GameMain() {
+    public GameMain(boolean isAIGame, String difficulty) {
+        this.isAIGame = isAIGame;
         initGame();
 
-        // Inisialisasi AI (contoh AI)
-        easyAI = new AIPLayerEasy(board);
-        mediumAI = new AIPlayerMedium(board);
-        hardAI = new AIPlayerHard(board);
-        dynamicAI = new AIPlayerDynamic(board);
+        if (isAIGame) {
+            easyAI = new AIPLayerEasy(board);
+            mediumAI = new AIPlayerMedium(board);
+            hardAI = new AIPlayerHard(board);
+            dynamicAI = new AIPlayerDynamic(board);
 
-        // Set default AI
-        currentAI = easyAI; // Default ke easy 
-        currentAI.setSeed(Seed.NOUGHT);
-        // AI plays as O (Nought)
-        easyAI.setSeed(Seed.NOUGHT);
-        mediumAI.setSeed(Seed.NOUGHT);
-        hardAI.setSeed(Seed.NOUGHT);
-        dynamicAI.setSeed(Seed.NOUGHT);
+            easyAI.setSeed(Seed.NOUGHT);
+            mediumAI.setSeed(Seed.NOUGHT);
+            hardAI.setSeed(Seed.NOUGHT);
+            dynamicAI.setSeed(Seed.NOUGHT);
 
-        // Mouse Listener
+            if (difficulty != null) {
+                switch (difficulty.toLowerCase()) {
+                    case "easy":
+                        currentAI = easyAI;
+                        break;
+                    case "medium":
+                        currentAI = mediumAI;
+                        break;
+                    case "hard":
+                        currentAI = hardAI;
+                        break;
+                    default:
+                        currentAI = easyAI;
+                }
+            } else {
+                currentAI = easyAI;
+            }
+        }
+
         super.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -66,43 +71,48 @@ public class GameMain extends JPanel {
                 int col = mouseX / Cell.SIZE;
 
                 if (currentState == State.PLAYING) {
-                    SoundEffect.EAT_FOOD.play();
                     if (row >= 0 && row < Board.ROWS && col >= 0 && col < Board.COLS
                             && board.cells[row][col].content == Seed.NO_SEED) {
-
-                        // Human move
+                        
+                        SoundEffect.EAT_FOOD.play();
+                        
+                        // Make move for current player
                         currentState = board.stepGame(currentPlayer, row, col);
+                        
+                        // Check for win/draw conditions
                         if (currentState == State.CROSS_WON || currentState == State.NOUGHT_WON) {
-                            SoundEffect.EXPLODE.play();  // Play explosion sound on win
+                            SoundEffect.EXPLODE.play();
                         } else if (currentState == State.DRAW) {
-                            SoundEffect.DIE.play();  // Play dying sound on draw
+                            SoundEffect.DIE.play();
                         }
 
-                        // AI Move
-                        currentPlayer = Seed.NOUGHT;
-
-                        if (currentState == State.PLAYING & isAIGame) {
-                            Timer timer = new Timer(800, new ActionListener() {
-                                @Override
-                                public void actionPerformed(ActionEvent evt) {
-                                    // AI move
-                                    int[] aiMove = currentAI.move();
-                                    if (aiMove != null) {
-                                        currentState = board.stepGame(currentPlayer, aiMove[0], aiMove[1]);
-                                        if (currentState == State.PLAYING) {
-                                            SoundEffect.EAT_FOOD.play();
-                                        } else {
-                                            SoundEffect.DIE.play();
+                        // Handle next turn
+                        if (isAIGame) {
+                            if (currentState == State.PLAYING) {
+                                currentPlayer = Seed.NOUGHT;
+                                // AI move with delay
+                                Timer timer = new Timer(800, new ActionListener() {
+                                    @Override
+                                    public void actionPerformed(ActionEvent evt) {
+                                        int[] aiMove = currentAI.move();
+                                        if (aiMove != null) {
+                                            currentState = board.stepGame(currentPlayer, aiMove[0], aiMove[1]);
+                                            if (currentState == State.PLAYING) {
+                                                SoundEffect.EAT_FOOD.play();
+                                            } else {
+                                                SoundEffect.DIE.play();
+                                            }
+                                            currentPlayer = Seed.CROSS;
+                                            repaint();
                                         }
-
-                                        currentPlayer = Seed.CROSS;
-                                        repaint();
                                     }
-                                }
-                            });
-
-                            timer.setRepeats(false);
-                            timer.start();
+                                });
+                                timer.setRepeats(false);
+                                timer.start();
+                            }
+                        } else {
+                            // PvP mode: switch players
+                            currentPlayer = (currentPlayer == Seed.CROSS) ? Seed.NOUGHT : Seed.CROSS;
                         }
                     }
                 } else {
@@ -112,7 +122,7 @@ public class GameMain extends JPanel {
             }
         });
 
-        // Set up the status bar (JLabel)
+        // Status bar setup
         statusBar = new JLabel();
         statusBar.setFont(FONT_STATUS);
         statusBar.setBackground(COLOR_BG_STATUS);
@@ -123,14 +133,14 @@ public class GameMain extends JPanel {
 
         super.setLayout(new BorderLayout());
         super.add(statusBar, BorderLayout.PAGE_END);
-        super.setPreferredSize(new Dimension(Board.CANVAS_WIDTH, Board.CANVAS_HEIGHT + 80)); // Tinggi tambahan untuk tombol
+        super.setPreferredSize(new Dimension(Board.CANVAS_WIDTH, Board.CANVAS_HEIGHT + 80));
         super.setBorder(BorderFactory.createLineBorder(COLOR_BG_STATUS, 2, false));
 
         // Tambahkan di bagian constructor
-// Panel untuk menggabungkan dropdown dan tombol restart
+        // Panel untuk menggabungkan dropdown dan tombol restart
         JPanel controlPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
 
-// Dropdown untuk tingkat kesulitan
+        // Dropdown untuk tingkat kesulitan
         String[] difficulties = {"Easy", "Medium", "Hard", "Dynamic"};
         difficultyDropdown = new JComboBox<>(difficulties);
         difficultyDropdown.addActionListener(e -> {
@@ -152,18 +162,21 @@ public class GameMain extends JPanel {
             restartGame();
             repaint();
             currentAI.setSeed(Seed.NOUGHT); // AI selalu O
-           
 
         });
         controlPanel.add(difficultyDropdown);
 
-// Tombol Restart
+        // Tombol Restart
         restartButton = new JButton("Restart Game");
+        restartButton.setForeground(new Color(255, 255, 255));
+        restartButton.setFocusPainted(false);
+        restartButton.setBackground(new Color(33, 37, 49));
+        restartButton.setFont(new Font("Figtree", Font.BOLD, 14));
         restartButton.setPreferredSize(new Dimension(150, 30));
         restartButton.addActionListener(e -> restartGame());
         controlPanel.add(restartButton);
 
-// Tambahkan panel gabungan ke posisi PAGE_END
+        // Tambahkan panel gabungan ke posisi PAGE_END
         super.add(controlPanel, BorderLayout.PAGE_END);
 
         // Action Listener untuk Restart Game
@@ -177,27 +190,24 @@ public class GameMain extends JPanel {
         newGame();
     }
 
-    // Inisialisasi game
     public void initGame() {
-        board = new Board();  // allocate the game-board
-        SoundEffect.initGame(); // Pre-load all sound effects
-        SoundEffect.playBackgroundMusic();  // Start playing background music
+        board = new Board();
+        SoundEffect.initGame();
+        SoundEffect.playBackgroundMusic();
     }
 
-    // Memulai permainan baru
     public void newGame() {
         for (int row = 0; row < Board.ROWS; ++row) {
             for (int col = 0; col < Board.COLS; ++col) {
-                board.cells[row][col].content = Seed.NO_SEED; // all cells empty
+                board.cells[row][col].content = Seed.NO_SEED;
             }
         }
-        currentPlayer = Seed.CROSS;    // cross plays first
-        currentState = State.PLAYING;  // ready to play
+        currentPlayer = Seed.CROSS;
+        currentState = State.PLAYING;
         SoundEffect.playBackgroundMusic();
         repaint();
     }
 
-    // Mengulang permainan
     public void restartGame() {
         newGame();
     }
@@ -206,12 +216,15 @@ public class GameMain extends JPanel {
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         setBackground(COLOR_BG);
+        board.paint(g);
 
-        board.paint(g);  // ask the game board to paint itself
+        String playerIndicator = isAIGame ? 
+            (currentPlayer == Seed.CROSS ? "Your Turn" : "Computer's Turn") :
+            (currentPlayer == Seed.CROSS ? "X's Turn" : "O's Turn");
 
         if (currentState == State.PLAYING) {
             statusBar.setForeground(Color.BLACK);
-            statusBar.setText((currentPlayer == Seed.CROSS) ? "X's Turn" : "O's Turn");
+            statusBar.setText(playerIndicator);
         } else if (currentState == State.DRAW) {
             statusBar.setForeground(Color.RED);
             statusBar.setText("It's a Draw! Click to play again.");
@@ -224,12 +237,14 @@ public class GameMain extends JPanel {
         }
     }
 
-    // Main method untuk menjalankan game
     public static void main(String[] args) {
+        boolean isAIGame = args[0].equals("aiGame");
+        String difficulty = args.length > 1 ? args[1] : null;
+        
         javax.swing.SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 JFrame frame = new JFrame(TITLE);
-                frame.setContentPane(new GameMain());
+                frame.setContentPane(new GameMain(isAIGame, difficulty));
                 frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                 frame.pack();
                 frame.setSize(400, 500); // Atur ukuran
