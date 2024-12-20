@@ -149,6 +149,8 @@ public class GameMain extends JPanel {
                     currentAI = dynamicAI;
                     break;
             }
+            restartGame();
+            repaint();
             currentAI.setSeed(Seed.NOUGHT); // AI selalu O
            
 
