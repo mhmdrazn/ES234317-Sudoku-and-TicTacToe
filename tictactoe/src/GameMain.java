@@ -86,7 +86,7 @@ public class GameMain extends JPanel {
                                 @Override
                                 public void actionPerformed(ActionEvent evt) {
                                     // AI move
-                                    int[] aiMove = hardAI.move();
+                                    int[] aiMove = currentAI.move();
                                     if (aiMove != null) {
                                         currentState = board.stepGame(currentPlayer, aiMove[0], aiMove[1]);
                                         if (currentState == State.PLAYING) {
@@ -150,6 +150,8 @@ public class GameMain extends JPanel {
                     break;
             }
             currentAI.setSeed(Seed.NOUGHT); // AI selalu O
+           
+
         });
         controlPanel.add(difficultyDropdown);
 
