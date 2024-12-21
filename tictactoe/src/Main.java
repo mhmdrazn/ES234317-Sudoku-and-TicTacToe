@@ -10,18 +10,16 @@
 
 package tictactoe.src;
 import javax.swing.*;
-import sudoku.src.BackgroundMusic;
 import java.awt.*;
 
 public class Main {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            // Create custom dialog
+            // Popup Window
             JDialog dialog = new JDialog();
             dialog.setTitle("TicTacToe");
             dialog.setModal(true);
 
-            // Main panel with vertical layout
             JPanel panel = new JPanel();
             panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
             panel.setBackground(new Color(33, 37, 49));
@@ -48,12 +46,6 @@ public class Main {
             welcomeText.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
             panel.add(welcomeText);
 
-            JLabel enjoyText = new JLabel("Select your game type");
-            enjoyText.setFont(new Font("Figtree", Font.PLAIN, 14));
-            enjoyText.setForeground(Color.WHITE);
-            enjoyText.setAlignmentX(Component.CENTER_ALIGNMENT);
-            panel.add(enjoyText);
-
             JLabel label = new JLabel("Text with Custom Color");
             label.setForeground(new Color(0x212531));
             label.setFont(new Font("Figtree", Font.BOLD, 10));
@@ -73,7 +65,7 @@ public class Main {
             });
 
             // TicTacToe Button
-            JButton TicButton = new JButton("TicTacToe");
+            JButton TicButton = new JButton("Start Game");
             TicButton.setFont(new Font("Figtree", Font.BOLD, 14));
             TicButton.setAlignmentX(Component.CENTER_ALIGNMENT);
             TicButton.setForeground(new Color(255, 255, 255));
@@ -117,6 +109,10 @@ public class Main {
                 playerButton.setForeground(Color.WHITE);
                 playerButton.setBackground(new Color(64, 154, 225));
                 playerButton.setFocusPainted(false);
+                playerButton.addActionListener(_ -> {
+                    modeDialog.dispose();
+                    GameMain.main(new String[]{"player"});
+                });
                 
                 // VS Player Description
                 JLabel playerDesc = new JLabel("<html><center>Challenge your friend in a classic<br>head-to-head match!</center></html>");
@@ -138,7 +134,6 @@ public class Main {
                 computerButton.setFocusPainted(false);
                 computerButton.addActionListener(_ -> {
                     modeDialog.dispose();
-                    GameMain.main(new String[0]);
                 });
                 
                 // VS Computer Description
@@ -159,15 +154,12 @@ public class Main {
                 modePanel.add(exitButton, BorderLayout.SOUTH);
                 
                 // Button actions
-                playerButton.addActionListener(_ -> {
+                playerButton.addActionListener(_  -> {
                     modeDialog.dispose();
                     GameMain.main(new String[]{"player"});  // Pass mode as argument
                 });
                 
-                computerButton.addActionListener(_ -> {
-                    // modeDialog.dispose();
-                    // GameMain.main(new String[]{"computer"});  // Pass mode as argument
-                    // Inside the computerButton.addActionListener, replace GameMain.main(new String[0]) with:
+                computerButton.addActionListener(_  -> {
 
                     // Create difficulty selection dialog
                     JDialog difficultyDialog = new JDialog();
@@ -199,7 +191,7 @@ public class Main {
                     easyButton.setForeground(Color.WHITE);
                     easyButton.setBackground(new Color(92, 184, 92)); // Green color
                     easyButton.setFocusPainted(false);
-                    easyButton.addActionListener(_ -> {
+                    easyButton.addActionListener(_  -> {
                         difficultyDialog.dispose();
                         GameMain.main(new String[]{"aiGame", "easy"});
                     });
@@ -223,7 +215,7 @@ public class Main {
                     mediumButton.setForeground(Color.WHITE);
                     mediumButton.setBackground(new Color(240, 173, 78)); // Orange color
                     mediumButton.setFocusPainted(false);
-                    mediumButton.addActionListener(_ -> {
+                    mediumButton.addActionListener(_  -> {
                         difficultyDialog.dispose();
                         GameMain.main(new String[]{"aiGame", "medium"});
                     });
@@ -275,7 +267,7 @@ public class Main {
                     backButton.setForeground(Color.WHITE);
                     backButton.setBackground(new Color(33, 37, 49));
                     backButton.setFocusPainted(false);
-                    backButton.addActionListener(_ -> {
+                    backButton.addActionListener(_  -> {
                         difficultyDialog.dispose();
                         modeDialog.setVisible(true);
                     });
@@ -295,20 +287,7 @@ public class Main {
                 modeDialog.setLocationRelativeTo(null);
                 modeDialog.setVisible(true);
             });
-            container.add(TicButton, BorderLayout.WEST);
-            
-            // TicTacToe Button
-            JButton OthelloButton = new JButton("Othello");
-            OthelloButton.setFont(new Font("Figtree", Font.BOLD, 14));
-            OthelloButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-            OthelloButton.setForeground(new Color(255, 255, 255));
-            OthelloButton.setFocusPainted(false);
-            OthelloButton.setBackground(new Color(33, 37, 49));
-            OthelloButton.addActionListener(_ -> {
-                dialog.dispose();
-                GameMain.main(new String[0]);
-            });
-            container.add(OthelloButton, BorderLayout.EAST);
+            container.add(TicButton, BorderLayout.CENTER);
 
             panel.add(container);
 

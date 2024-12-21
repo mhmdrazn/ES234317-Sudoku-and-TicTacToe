@@ -8,7 +8,6 @@
  * 3 - 5026231174 - Muhamamd Razan Parisya Putra
  */
 
-
 package tictactoe.src;
 
 import java.awt.*;

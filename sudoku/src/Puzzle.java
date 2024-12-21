@@ -13,7 +13,6 @@ package sudoku.src;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Random;
 
 /**
  * The Sudoku number puzzle to be solved
@@ -26,8 +25,6 @@ public class Puzzle {
     boolean[][] isGiven = new boolean[SudokuConstants.GRID_SIZE][SudokuConstants.GRID_SIZE];
     int[][] playerGuesses = new int[SudokuConstants.GRID_SIZE][SudokuConstants.GRID_SIZE];
     private int[][] solution;
-    // Random number generator for additional randomness
-    private Random random = new Random();
 
     // Constructor
     public Puzzle() {
