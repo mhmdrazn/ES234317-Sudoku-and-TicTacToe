@@ -14,6 +14,7 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 
+
 public class GameMain extends JPanel {
     private static final long serialVersionUID = 1L;
 
@@ -22,61 +23,59 @@ public class GameMain extends JPanel {
     public static final Color COLOR_BG_STATUS = new Color(216, 216, 216);
     public static final Color COLOR_CROSS = new Color(239, 105, 80);  // Red #EF6950
     public static final Color COLOR_NOUGHT = new Color(64, 154, 225); // Blue #409AE1
-    public static final Font FONT_STATUS = new Font("Figtree", Font.PLAIN, 14);
+    public static final Font FONT_STATUS = new Font("OCR A Extended", Font.PLAIN, 14);
 
     private boolean isAIGame;
     private Board board;
     private State currentState;
     private Seed currentPlayer;
+    private AIPlayer currentAI;
     private JLabel statusBar;
     private AIPlayer easyAI;
     private AIPlayer mediumAI;
     private AIPlayer hardAI;
-    private AIPlayer dynamicAI;
     private JButton restartButton;
-    private AIPlayer currentAI;
+    private JButton exitButton;
     private JComboBox<String> difficultyDropdown;
+    private JLabel difficultyLabel;
+    private JPanel difficultyPanel;
 
-    public GameMain(boolean isAIGame, String difficulty) {
+    private void setAIDifficulty(String difficulty) {
+        switch (difficulty.toLowerCase()) {
+            case "easy":
+                currentAI = easyAI;
+                break;
+            case "medium":
+                currentAI = mediumAI;
+                break;
+            case "hard":
+                currentAI = hardAI;
+                break;
+        }
+        if (currentAI != null) {
+            currentAI.setSeed(Seed.NOUGHT);
+        }
+    }
+
+    public void runGame(boolean isAIGame) {
         this.isAIGame = isAIGame;
         initGame();
 
         if (isAIGame) {
+            // Initialize AI players only in AI mode
             easyAI = new AIPLayerEasy(board);
             mediumAI = new AIPlayerMedium(board);
             hardAI = new AIPlayerHard(board);
-            dynamicAI = new AIPlayerDynamic(board);
-
-            easyAI.setSeed(Seed.NOUGHT);
-            mediumAI.setSeed(Seed.NOUGHT);
-            hardAI.setSeed(Seed.NOUGHT);
-            dynamicAI.setSeed(Seed.NOUGHT);
-
-            if (difficulty != null) {
-                switch (difficulty.toLowerCase()) {
-                    case "easy":
-                        currentAI = easyAI;
-                        break;
-                    case "medium":
-                        currentAI = mediumAI;
-                        break;
-                    case "hard":
-                        currentAI = hardAI;
-                        break;
-                    default:
-                        currentAI = easyAI;
-                }
-            } else {
-                currentAI = easyAI;
-            }
+            currentAI = easyAI;
+            currentAI.setSeed(Seed.NOUGHT);
         }
 
+        // Mouse Listener
         super.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 int mouseX = e.getX();
                 int mouseY = e.getY();
-
                 int row = mouseY / Cell.SIZE;
                 int col = mouseX / Cell.SIZE;
 
@@ -85,11 +84,10 @@ public class GameMain extends JPanel {
                             && board.cells[row][col].content == Seed.NO_SEED) {
                         
                         SoundEffect.EAT_FOOD.play();
-                        
-                        // Make move for current player
+                        // Make move and update game state
                         currentState = board.stepGame(currentPlayer, row, col);
                         
-                        // Check for win/draw conditions
+                        // Check for game end conditions
                         if (currentState == State.CROSS_WON || currentState == State.NOUGHT_WON) {
                             SoundEffect.EXPLODE.play();
                         } else if (currentState == State.DRAW) {
@@ -97,31 +95,29 @@ public class GameMain extends JPanel {
                         }
 
                         // Handle next turn
-                        if (isAIGame) {
-                            if (currentState == State.PLAYING) {
-                                currentPlayer = Seed.NOUGHT;
-                                // AI move with delay
-                                Timer timer = new Timer(800, new ActionListener() {
-                                    @Override
-                                    public void actionPerformed(ActionEvent evt) {
-                                        int[] aiMove = currentAI.move();
-                                        if (aiMove != null) {
-                                            currentState = board.stepGame(currentPlayer, aiMove[0], aiMove[1]);
-                                            if (currentState == State.PLAYING) {
-                                                SoundEffect.EAT_FOOD.play();
-                                            } else {
-                                                SoundEffect.DIE.play();
-                                            }
-                                            currentPlayer = Seed.CROSS;
-                                            repaint();
+                        if (isAIGame && currentState == State.PLAYING) {
+                            currentPlayer = Seed.NOUGHT;
+                            // AI move with delay
+                            Timer timer = new Timer(800, new ActionListener() {
+                                @Override
+                                public void actionPerformed(ActionEvent evt) {
+                                    int[] aiMove = currentAI.move();
+                                    if (aiMove != null) {
+                                        currentState = board.stepGame(currentPlayer, aiMove[0], aiMove[1]);
+                                        if (currentState == State.PLAYING) {
+                                            SoundEffect.EAT_FOOD.play();
+                                        } else {
+                                            SoundEffect.DIE.play();
                                         }
+                                        currentPlayer = Seed.CROSS;
+                                        repaint();
                                     }
-                                });
-                                timer.setRepeats(false);
-                                timer.start();
-                            }
+                                }
+                            });
+                            timer.setRepeats(false);
+                            timer.start();
                         } else {
-                            // PvP mode: switch players
+                            // Player vs Player: switch turns
                             currentPlayer = (currentPlayer == Seed.CROSS) ? Seed.NOUGHT : Seed.CROSS;
                         }
                     }
@@ -132,70 +128,82 @@ public class GameMain extends JPanel {
             }
         });
 
-        // Status bar setup
+        // Status Bar
         statusBar = new JLabel();
-        statusBar.setFont(FONT_STATUS);
-        statusBar.setBackground(COLOR_BG_STATUS);
+        statusBar.setFont(new Font("Figtree", Font.PLAIN, 14));
+        statusBar.setBackground(new Color(33, 37, 49));
         statusBar.setOpaque(true);
-        statusBar.setPreferredSize(new Dimension(300, 30));
         statusBar.setHorizontalAlignment(JLabel.LEFT);
-        statusBar.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 12));
+        statusBar.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
 
-        super.setLayout(new BorderLayout());
-        super.add(statusBar, BorderLayout.PAGE_END);
-        super.setPreferredSize(new Dimension(Board.CANVAS_WIDTH, Board.CANVAS_HEIGHT + 80));
-        super.setBorder(BorderFactory.createLineBorder(COLOR_BG_STATUS, 2, false));
+        // Create panels
+        JPanel bottomPanel = new JPanel(new BorderLayout());
+        bottomPanel.setBackground(new Color(33, 37, 49));
+        bottomPanel.setBorder(BorderFactory.createEmptyBorder(4, 8, 4, 8));
 
-        // Tambahkan di bagian constructor
-        // Panel untuk menggabungkan dropdown dan tombol restart
-        JPanel controlPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        JPanel topControlPanel = new JPanel(new BorderLayout(5, 5));
+        topControlPanel.setBackground(new Color(33, 37, 49));
+        topControlPanel.setBorder(BorderFactory.createEmptyBorder(4, 8, 4, 8));
 
-        // Dropdown untuk tingkat kesulitan
-        String[] difficulties = {"Easy", "Medium", "Hard", "Dynamic"};
+        JPanel bottomControlPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 0));
+        bottomControlPanel.setBackground(new Color(33, 37, 49));
+        bottomControlPanel.setBorder(BorderFactory.createEmptyBorder(4, 8, 4, 8));
+
+        // Difficulty controls (only shown in AI mode)
+        difficultyPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        difficultyPanel.setBackground(new Color(33, 37, 49));
+
+        difficultyLabel = new JLabel("Difficulty: Easy");
+        difficultyLabel.setFont(new Font("Figtree", Font.PLAIN, 14));
+        difficultyLabel.setForeground(Color.WHITE);
+
+        String[] difficulties = {"Easy", "Medium", "Hard"};
         difficultyDropdown = new JComboBox<>(difficulties);
-        difficultyDropdown.addActionListener(_ -> {
+        difficultyDropdown.setBackground(new Color(33, 37, 49));
+        difficultyDropdown.setBorder(BorderFactory.createEmptyBorder(0, 4, 0, 10));
+        difficultyDropdown.setForeground(Color.WHITE);
+        difficultyDropdown.setFocusable(false);
+        difficultyDropdown.setFont(new Font("Figtree", Font.PLAIN, 14));
+        difficultyDropdown.addActionListener(e -> {
             String selected = (String) difficultyDropdown.getSelectedItem();
-            switch (selected) {
-                case "Easy":
-                    currentAI = easyAI;
-                    break;
-                case "Medium":
-                    currentAI = mediumAI;
-                    break;
-                case "Hard":
-                    currentAI = hardAI;
-                    break;
-                case "Dynamic":
-                    currentAI = dynamicAI;
-                    break;
-            }
+            difficultyLabel.setText("Difficulty: " + selected);
+            setAIDifficulty(selected);
             restartGame();
             repaint();
-            currentAI.setSeed(Seed.NOUGHT); // AI selalu O
-
         });
-        controlPanel.add(difficultyDropdown);
 
-        // Tombol Restart
+        // Only add difficulty controls in AI mode
+        if (isAIGame) {
+            topControlPanel.add(difficultyLabel);
+            bottomControlPanel.add(difficultyDropdown, BorderLayout.EAST);
+            topControlPanel.add(difficultyPanel, BorderLayout.WEST);
+        }
+
+        // Control buttons
         restartButton = new JButton("Restart Game");
-        restartButton.setForeground(new Color(255, 255, 255));
-        restartButton.setFocusPainted(false);
         restartButton.setBackground(new Color(33, 37, 49));
-        restartButton.setFont(new Font("Figtree", Font.BOLD, 14));
-        restartButton.setPreferredSize(new Dimension(150, 30));
-        restartButton.addActionListener(_ -> restartGame());
-        controlPanel.add(restartButton);
+        restartButton.setForeground(Color.WHITE);
+        restartButton.setFocusPainted(false);
+        restartButton.setFont(new Font("Figtree", Font.PLAIN, 14));
+        restartButton.addActionListener(e -> restartGame());
 
-        // Tambahkan panel gabungan ke posisi PAGE_END
-        super.add(controlPanel, BorderLayout.PAGE_END);
+        exitButton = new JButton("Exit Game");
+        exitButton.setBackground(new Color(33, 37, 49));
+        exitButton.setForeground(Color.WHITE);
+        exitButton.setFocusPainted(false);
+        exitButton.setFont(new Font("Figtree", Font.PLAIN, 14));
+        exitButton.addActionListener(e -> System.exit(0));
 
-        // Action Listener untuk Restart Game
-        restartButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                restartGame();
-            }
-        });
+        topControlPanel.add(statusBar, BorderLayout.EAST);
+        bottomControlPanel.add(restartButton);
+        bottomControlPanel.add(exitButton);
+
+        bottomPanel.add(topControlPanel, BorderLayout.NORTH);
+        bottomPanel.add(bottomControlPanel, BorderLayout.SOUTH);
+
+        setLayout(new BorderLayout());
+        add(bottomPanel, BorderLayout.SOUTH);
+        setPreferredSize(new Dimension(Board.CANVAS_WIDTH, Board.CANVAS_HEIGHT + 80));
 
         newGame();
     }
@@ -225,39 +233,62 @@ public class GameMain extends JPanel {
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-        setBackground(COLOR_BG);
+        setBackground(Color.WHITE);
         board.paint(g);
 
-        String playerIndicator = isAIGame ? 
-            (currentPlayer == Seed.CROSS ? "Your Turn" : "Computer's Turn") :
-            (currentPlayer == Seed.CROSS ? "X's Turn" : "O's Turn");
-
         if (currentState == State.PLAYING) {
-            statusBar.setForeground(Color.BLACK);
-            statusBar.setText(playerIndicator);
+            statusBar.setForeground(Color.WHITE);
+            statusBar.setText((currentPlayer == Seed.CROSS) ? "X's Turn" : "O's Turn");
         } else if (currentState == State.DRAW) {
-            statusBar.setForeground(Color.RED);
+            statusBar.setForeground(Color.WHITE);
             statusBar.setText("It's a Draw! Click to play again.");
         } else if (currentState == State.CROSS_WON) {
-            statusBar.setForeground(Color.RED);
+            statusBar.setForeground(Color.WHITE);
             statusBar.setText("'X' Won! Click to play again.");
         } else if (currentState == State.NOUGHT_WON) {
-            statusBar.setForeground(Color.RED);
+            statusBar.setForeground(Color.WHITE);
             statusBar.setText("'O' Won! Click to play again.");
         }
     }
 
     public static void main(String[] args) {
-        boolean isAIGame = args[0].equals("aiGame");
-        String difficulty = args.length > 1 ? args[1] : null;
-        
         javax.swing.SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 JFrame frame = new JFrame(TITLE);
-                frame.setContentPane(new GameMain(isAIGame, difficulty));
+                GameMain game = new GameMain();
+                
+                // Check if we're running an AI game
+                boolean isAIGame = args.length > 0 && args[0].equals("aiGame");
+                
+                // Set up the game with the appropriate mode
+                game.runGame(isAIGame);
+                
+                // If it's an AI game and difficulty is specified
+                if (isAIGame && args.length > 1) {
+                    String difficulty = args[1].toLowerCase();
+                    switch (difficulty) {
+                        case "easy":
+                            game.difficultyDropdown.setSelectedItem("Easy");
+                            game.currentAI = game.easyAI;
+                            break;
+                        case "medium":
+                            game.difficultyDropdown.setSelectedItem("Medium");
+                            game.currentAI = game.mediumAI;
+                            break;
+                        case "hard":
+                            game.difficultyDropdown.setSelectedItem("Hard");
+                            game.currentAI = game.hardAI;
+                            break;
+                    }
+                    if (game.currentAI != null) {
+                        game.currentAI.setSeed(Seed.NOUGHT);
+                    }
+                }
+                
+                frame.setContentPane(game);
                 frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                 frame.pack();
-                frame.setSize(400, 500); // Atur ukuran
+                frame.setSize(390, 460);
                 frame.setLocationRelativeTo(null);
                 frame.setVisible(true);
             }

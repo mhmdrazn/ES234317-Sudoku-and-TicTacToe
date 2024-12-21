@@ -29,7 +29,7 @@ public class Main {
             panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
             // Image
-            ImageIcon welcomeIcon = new ImageIcon("D:\\capstone\\plis\\FP-ASD-C-Group4\\sudoku\\src\\welcom-img-unscreen.gif");
+            ImageIcon welcomeIcon = new ImageIcon("sudoku\\src\\welcom-img-unscreen.gif");
             JLabel imageLabel = new JLabel(welcomeIcon);
             imageLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
             panel.add(imageLabel);
@@ -69,7 +69,7 @@ public class Main {
 
             // Play background music
             BackgroundMusic backgroundMusic = new BackgroundMusic();
-            backgroundMusic.playMusic("D:\\capstone\\plis\\FP-ASD-C-Group4\\sudoku\\src\\audio\\bg-musik.wav");
+            backgroundMusic.playMusic("sudoku\\src\\audio\\bg-musik.wav");
 
             dialog.add(panel);
             dialog.pack();
