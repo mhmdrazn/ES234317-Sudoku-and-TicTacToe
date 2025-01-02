@@ -5,9 +5,9 @@
 Semester Ganjil, 2024/2025\
 Group Capstone Project\
 Group #4\
-1 - 5026231012 - [Zihni Aryanto Putra Buana](https://github.com/Zihniii)\
-2 - 5026231085 - [Firmansyah Adi Prasetyo](https://github.com/Firmansyahadip)\
-3 - 5026231174 - [Muhammad Razan Parisya Putra](https://github.com/mhmdrazn)
+1 - [Zihni Aryanto Putra Buana](https://github.com/Zihniii)\
+2 - [Firmansyah Adi Prasetyo](https://github.com/Firmansyahadip)\
+3 - [Muhammad Razan Parisya Putra](https://github.com/mhmdrazn)
 
 ---
 
